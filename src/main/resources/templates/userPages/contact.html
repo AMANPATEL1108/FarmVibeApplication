@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <title>Contact Us - Farm Vibe</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+</head>
+<body class="bg-gradient-to-br from-green-100 via-white to-green-50 min-h-screen text-gray-800">
+<div>
+
+    <!-- Header -->
+    <section class="text-center py-10 animate__animated animate__fadeInDown">
+        <h1 class="text-3xl font-bold text-green-800 mb-2">Contact Us</h1>
+        <p class="text-gray-600 text-base max-w-xl mx-auto">We’re happy to hear from you. Reach out for inquiries or support.</p>
+    </section>
+
+    <!-- Top Row: Image and Paragraph -->
+    <div class="container mx-auto px-4 flex flex-col md:flex-row gap-8 mb-12 animate__animated animate__fadeInLeft">
+        <!-- Image (65%) -->
+        <div class="md:w-[65%] rounded-lg shadow-md overflow-hidden max-h-[400px] md:max-h-[450px]">
+            <img src="/images/farmimages/farm1.webp" alt="Farm"
+                 class="w-full h-full object-cover hover:scale-105 transition duration-500" loading="lazy">
+        </div>
+
+        <!-- Paragraph (35%) -->
+        <div class="md:w-[35%] flex items-center">
+            <p class="text-lg leading-relaxed">
+                At <span class="font-semibold text-green-700">Farm Vibe</span>, we are committed to cultivating organic
+                produce and empowering local farming communities.
+                Connect with us to learn more about our mission, services, or to partner with us in sustainable agriculture.
+            </p>
+        </div>
+    </div>
+
+    <!-- Bottom Row: More Details and Map Side-by-Side -->
+    <div class="container mx-auto px-4 flex flex-col md:flex-row gap-6 mb-20 animate__animated animate__fadeInUp">
+        <!-- More Details (35%) -->
+        <div class="md:w-[35%] bg-gray-800 text-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-xl font-semibold mb-6  border-b  pb-2">More Details</h2>
+            <ul class="space-y-4 text-sm text-white">
+                <li class="flex items-start gap-3">
+                    <!-- Phone icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 10l7-7m0 0l7 7m-7-7v18" />
+                    </svg>
+                    <span><strong>Contact Number:</strong> +91 12345 67890</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <!-- Mobile phone icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <rect x="7" y="2" width="10" height="20" rx="2" ry="2" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 18h2" />
+                    </svg>
+                    <span><strong>Mobile Number:</strong> +91 12345 67890</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <!-- Location icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 21s-6-4.5-6-10a6 6 0 1112 0c0 5.5-6 10-6 10z" />
+                    </svg>
+                    <span><strong>Address:</strong><br/>123 Farm Lane, Arjanvav,<br/>Gujarat, India</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Google Map (65%) -->
+        <div class="md:w-[65%] rounded-lg overflow-hidden shadow-lg">
+            <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1221.5463827501!2d73.2015753215909!3d23.204508186598712!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e099d5d0673ab%3A0x189c86d986c58275!2sVaroshi%20Farm%20Arjanvav!5e1!3m2!1sen!2sin!4v1747306925855!5m2!1sen!2sin"
+                    width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade" title="Farm Location Map">
+            </iframe>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

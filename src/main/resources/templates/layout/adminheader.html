@@ -1,0 +1,67 @@
+<header class="bg-gray-900 text-white py-3" xmlns:th="http://www.w3.org/1999/xhtml" th:fragment="adminheader">
+    <div class="container mx-auto">
+        <div class="flex flex-col md:flex-row items-center justify-between">
+
+            <!-- Logo -->
+            <div class="mb-2 md:mb-0">
+                <a href="/" class="text-white no-underline hover:text-blue-300 transition">
+                    <h1 class="text-2xl font-extrabold tracking-wide">🌾 Farm Vibe</h1>
+                </a>
+            </div>
+            <!-- Navigation -->
+            <nav class="flex gap-4 mb-2 md:mb-0">
+                <a href="/admin/pageUrl?page=adashboard"
+                   th:classappend="${activePage == 'adashboard'} ? 'text-blue-400 font-bold' : 'text-white'"
+                   class="hover:text-blue-300 transition px-2 py-1 no-underline">
+                    Dashboard
+                </a>
+                <a href="/admin/pageUrl?page=aproducts"
+                   th:classappend="${activePage == 'aproducts'} ? 'text-blue-400 font-bold' : 'text-white'"
+                   class="hover:text-blue-300 transition px-2 py-1 no-underline">
+                    Products
+                </a>
+                <a href="/admin/pageUrl?page=ausers"
+                   th:classappend="${activePage == 'ausers'} ? 'text-blue-400 font-bold' : 'text-white'"
+                   class="hover:text-blue-300 transition px-2 py-1 no-underline">
+                    Users
+                </a>
+                <a href="/admin/pageUrl?page=aorders"
+                   th:classappend="${activePage == 'aorders'} ? 'text-blue-400 font-bold' : 'text-white'"
+                   class="hover:text-blue-300 transition px-2 py-1 no-underline">
+                    Orders
+                </a>
+                <!--                <a href="/admin/pageUrl?page=ausers"-->
+                <!--                   th:classappend="${activePage == 'ausers'} ? 'text-blue-400 font-bold' : 'text-white'"-->
+                <!--                   class="hover:text-blue-300 transition px-2 py-1 no-underline">-->
+                <!--                    Users-->
+                <!--                </a>-->
+            </nav>
+
+            <!-- Social + Auth + Profile -->
+            <div class="flex items-center gap-4 relative">
+
+                <!-- Sign In & Register Buttons -->
+                <a href="/admin/pageUrl?page=asigning"
+                   th:classappend="${activePage == 'asigning'} ? 'text-blue-400 font-bold' : 'text-white'"
+                   class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-4 py-1.5 rounded shadow transition duration-200">
+                    Sign In
+                </a>
+
+                <!-- Profile Icon + Dropdown -->
+                <div class="relative">
+                    <a
+                            href="/admin/pageUrl?page=aprofile"
+                            th:classappend="${activePage == 'aprofile'} ? 'text-blue-400 font-bold' : 'text-white'"
+
+                            class="focus:outline-none flex flex-col items-center">
+                        <img src="/images/logo/user.png" alt="Profile"
+                             class="w-9 h-9 rounded-full border-2 border-white"/>
+                        <p class="text-xs text-white text-center mt-1">Aman</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</header>

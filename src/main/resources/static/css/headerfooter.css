@@ -1,0 +1,24 @@
+/* src/main/resources/static/css/animations.css */
+
+@keyframes fadeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-slide-in {
+    animation: fadeSlideIn 1.2s ease-out both;
+}
+
+footer {
+  padding-bottom: 0 !important;
+}
+
+footer .row > div {
+  margin-bottom: 0 !important;
+}

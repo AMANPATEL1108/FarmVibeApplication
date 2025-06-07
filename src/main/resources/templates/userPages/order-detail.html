@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Order Details | Farm Vibe</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+
+    <style>
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-bounce-slow {
+            animation: bounce 1.5s infinite;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.5s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen font-sans">
+
+<!-- Order Status Banner -->
+<div class="flex justify-center items-center mt-10 mb-6">
+    <div class="bg-green-100 text-green-800 px-6 py-4 rounded-lg shadow animate-bounce-slow">
+        <p class="text-xl font-semibold">🚚 Your orders are on the way!</p>
+    </div>
+</div>
+
+<!-- Header with Title + Old Order History Button -->
+<div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg animate-fade-in-up flex justify-between items-center mb-10">
+    <h2 class="text-2xl font-bold text-gray-800">Order Details</h2>
+    <a href="pageUrl?page=order-history-old"
+       class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+        Old Order History
+    </a>
+</div>
+
+<!-- All Order Cards -->
+<div class="max-w-5xl mx-auto space-y-10 px-4 mb-12">
+
+    <!-- Product 1 -->
+    <div class="bg-white p-6 rounded-lg shadow-lg animate-fade-in-up">
+        <h3 class="text-2xl font-bold text-gray-800 mb-4">🛒 Fresh Mango</h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+            <div class="bg-gray-50 p-3 rounded-md border">
+                <p class="text-sm text-gray-600">Order Date:</p>
+                <p class="text-base font-medium text-gray-800">May 24, 2025</p>
+            </div>
+            <div class="bg-gray-50 p-3 rounded-md border">
+                <p class="text-sm text-gray-600">Estimated Delivery:</p>
+                <p class="text-base font-medium text-gray-800">May 28, 2025</p>
+            </div>
+            <div class="bg-gray-50 p-3 rounded-md border">
+                <p class="text-sm text-gray-600">Payment Type:</p>
+                <p class="text-base font-medium text-gray-800">Online</p>
+            </div>
+            <div class="bg-gray-50 p-3 rounded-md border">
+                <p class="text-sm text-gray-600">Payment Status:</p>
+                <span class="inline-block mt-1 px-3 py-1 text-sm font-semibold text-green-800 bg-green-100 rounded-full">
+                    Payment Confirmed
+                </span>
+            </div>
+        </div>
+
+        <div class="space-y-1 text-gray-700">
+            <p><strong>Category:</strong> Fruits</p>
+            <p><strong>Quantity:</strong> 2 kg</p>
+            <p><strong>Price/kg:</strong> ₹100</p>
+            <p><strong>Total:</strong> <span class="text-green-700 font-bold">₹200</span></p>
+        </div>
+    </div>
+
+    <!-- Product 2 -->
+    <div class="bg-white p-6 rounded-lg shadow-lg animate-fade-in-up">
+        <h3 class="text-2xl font-bold text-gray-800 mb-4">🍅 Organic Tomato</h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+            <div class="bg-gray-50 p-3 rounded-md border">
+                <p class="text-sm text-gray-600">Order Date:</p>
+                <p class="text-base font-medium text-gray-800">May 22, 2025</p>
+            </div>
+            <div class="bg-gray-50 p-3 rounded-md border">
+                <p class="text-sm text-gray-600">Estimated Delivery:</p>
+                <p class="text-base font-medium text-gray-800">May 26, 2025</p>
+            </div>
+            <div class="bg-gray-50 p-3 rounded-md border">
+                <p class="text-sm text-gray-600">Payment Type:</p>
+                <p class="text-base font-medium text-gray-800">COD</p>
+            </div>
+            <div class="bg-gray-50 p-3 rounded-md border">
+                <p class="text-sm text-gray-600">Payment Status:</p>
+                <span class="inline-block mt-1 px-3 py-1 text-sm font-semibold text-yellow-800 bg-yellow-100 rounded-full">
+                    Pending
+                </span>
+            </div>
+        </div>
+
+        <div class="space-y-1 text-gray-700">
+            <p><strong>Category:</strong> Vegetables</p>
+            <p><strong>Quantity:</strong> 3 kg</p>
+            <p><strong>Price/kg:</strong> ₹40</p>
+            <p><strong>Total:</strong> <span class="text-green-700 font-bold">₹120</span></p>
+        </div>
+    </div>
+
+    <!-- Product 3 -->
+    <div class="bg-white p-6 rounded-lg shadow-lg animate-fade-in-up">
+        <h3 class="text-2xl font-bold text-gray-800 mb-4">🍚 Basmati Rice</h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+            <div class="bg-gray-50 p-3 rounded-md border">
+                <p class="text-sm text-gray-600">Order Date:</p>
+                <p class="text-base font-medium text-gray-800">May 20, 2025</p>
+            </div>
+            <div class="bg-gray-50 p-3 rounded-md border">
+                <p class="text-sm text-gray-600">Estimated Delivery:</p>
+                <p class="text-base font-medium text-gray-800">May 25, 2025</p>
+            </div>
+            <div class="bg-gray-50 p-3 rounded-md border">
+                <p class="text-sm text-gray-600">Payment Type:</p>
+                <p class="text-base font-medium text-gray-800">Online</p>
+            </div>
+            <div class="bg-gray-50 p-3 rounded-md border">
+                <p class="text-sm text-gray-600">Payment Status:</p>
+                <span class="inline-block mt-1 px-3 py-1 text-sm font-semibold text-green-800 bg-green-100 rounded-full">
+                    Payment Confirmed
+                </span>
+            </div>
+        </div>
+
+        <div class="space-y-1 text-gray-700">
+            <p><strong>Category:</strong> Grains</p>
+            <p><strong>Quantity:</strong> 5 kg</p>
+            <p><strong>Price/kg:</strong> ₹60</p>
+            <p><strong>Total:</strong> <span class="text-green-700 font-bold">₹300</span></p>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

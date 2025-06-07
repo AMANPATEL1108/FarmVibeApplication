@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Farm Vibe - Home</title>
+
+    <!-- Custom Animations (optional fallback) -->
+    <style>
+        img:hover {
+            transform: scale(1.05);
+            transition: transform 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+
+<div>
+
+    <!-- Hero Section -->
+    <section class="text-center py-20 animate__animated animate__fadeInDown">
+        <h1 class="text-5xl font-bold text-green-800 mb-6">Welcome to Farm Vibe</h1>
+        <p class="text-lg text-gray-600">Feel the nature, live the vibe.</p>
+    </section>
+
+    <!-- Content Sections -->
+    <div class="container space-y-24 pb-24">
+
+        <!-- Section 1: Image Left, Text Right -->
+        <div class="row align-items-center animate__animated animate__fadeInLeft animate__delay-1s">
+            <div class="col-md-6 mb-4 mb-md-0 text-center">
+                <img th:src="@{/images/farmimages/farm1.webp}"
+                     class="rounded shadow-lg max-w-md w-100 mx-auto"
+                     alt="Farm Image 1">
+            </div>
+            <div class="col-md-6">
+                <h2 class="text-3xl font-semibold text-green-700 mb-3">Pure Organic Farming</h2>
+                <p class="text-gray-700">We believe in eco-friendly and organic cultivation that respects nature and
+                    sustains livelihoods.</p>
+            </div>
+        </div>
+
+        <!-- Section 2: Text Left, Image Right -->
+        <div class="row align-items-center flex-md-row-reverse animate__animated animate__fadeInRight animate__delay-2s">
+            <div class="col-md-6 mb-4 mb-md-0 text-center">
+                <img th:src="@{/images/farmimages/farm2.webp}"
+                     class="rounded shadow-lg max-w-md w-100 mx-auto"
+                     alt="Farm Image 2">
+            </div>
+            <div class="col-md-6">
+                <h2 class="text-3xl font-semibold text-green-700 mb-3">Empowering Farmers</h2>
+                <p class="text-gray-700">Our goal is to empower local farmers with knowledge and tools to thrive in
+                    modern
+                    agriculture.</p>
+            </div>
+        </div>
+
+        <!-- Section 3: Image Left, Text Right -->
+        <div class="row align-items-center animate__animated animate__fadeInLeft animate__delay-3s">
+            <div class="col-md-6 mb-4 mb-md-0 text-center">
+                <img th:src="@{/images/farmimages/farm3.webp}"
+                     class="rounded shadow-lg max-w-md w-100 mx-auto"
+                     alt="Farm Image 3">
+            </div>
+            <div class="col-md-6">
+                <h2 class="text-3xl font-semibold text-green-700 mb-3">Modern Techniques</h2>
+                <p class="text-gray-700">Combining tradition with innovation, we help farms adopt sustainable yet
+                    efficient
+                    practices.</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

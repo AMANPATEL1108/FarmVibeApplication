@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Register - Farm Vibe</title>
+    <link
+            href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+            rel="stylesheet"
+    />
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+</head>
+<body class="bg-gray-100">
+
+<!-- Main Container -->
+<div class="min-h-screen flex items-center justify-center">
+    <div
+            class="bg-white shadow-xl rounded-xl overflow-hidden max-w-6xl w-full flex flex-col md:flex-row animate__animated animate__fadeInUp"
+    >
+        <!-- Left Image Section -->
+        <div class="w-full md:w-1/2 h-96 md:h-auto">
+            <img
+                    src="/images/logo/register.png"
+                    alt="Register"
+                    class="object-cover w-full h-full"
+            />
+        </div>
+
+        <!-- Right Form Section -->
+        <div class="w-full md:w-1/2 p-10 flex flex-col">
+            <h2 class="text-3xl font-bold text-green-700 mb-6 text-center">
+                Admin Registration
+            </h2>
+
+            <form
+                    class="space-y-4 flex-grow"
+                    th:action="@{/admin/register}"
+                    method="post"
+                    enctype="multipart/form-data"
+                    onsubmit="event.preventDefault(); showVerificationModal();"
+            >
+                <div class="flex flex-col md:flex-row gap-4">
+                    <input
+                            type="text"
+                            name="firstName"
+                            placeholder="First Name"
+                            required
+                            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                    <input
+                            type="text"
+                            name="lastName"
+                            placeholder="Last Name"
+                            required
+                            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                </div>
+
+                <input
+                        type="email"
+                        name="email"
+                        placeholder="Email"
+                        required
+                        class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+
+                <input
+                        type="tel"
+                        name="phone"
+                        placeholder="Phone Number"
+                        required
+                        class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+
+                <input
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        required
+                        class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+
+                <input
+                        type="password"
+                        name="confirmPassword"
+                        placeholder="Re-enter Password"
+                        required
+                        class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+
+                <!-- Profile Image Upload -->
+                <div class="flex flex-col">
+                    <label class="text-sm text-gray-600 mb-1 font-medium">Profile Image</label>
+                    <input
+                            type="file"
+                            name="profileImage"
+                            accept="image/*"
+                            required
+                            class="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                </div>
+
+                <button
+                        type="submit"
+                        class="w-full bg-green-600 text-white py-2 rounded-md font-semibold hover:bg-green-700 transition duration-300"
+                >
+                    Register
+                </button>
+            </form>
+
+            <!-- Back Button -->
+            <button
+                    onclick="window.history.back()"
+                    class="mt-4 w-full border border-gray-400 text-gray-700 py-2 rounded-md font-semibold hover:bg-gray-100 transition duration-300"
+            >
+                Back
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Verification Modal -->
+<div
+        id="verificationModal"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50"
+>
+    <div
+            class="relative bg-white rounded-lg p-8 w-96 shadow-lg animate__animated animate__zoomIn text-center"
+    >
+        <!-- Close Button -->
+        <button
+                onclick="closeVerificationModal()"
+                class="absolute top-2 right-2 text-gray-500 hover:text-red-600 text-xl font-bold focus:outline-none"
+        >
+            &times;
+        </button>
+
+        <h3 class="text-2xl font-bold text-green-700 mb-4">Verification</h3>
+        <p id="instructionText" class="text-gray-600 mb-4">
+            Enter the 4-digit verification code sent to your phone.
+        </p>
+
+        <p id="verifiedText" class="text-green-700 font-semibold mb-4 hidden">
+            Verified
+        </p>
+
+        <input
+                id="otpInput"
+                type="number"
+                maxlength="4"
+                placeholder="Enter Code"
+                class="w-full text-center border border-gray-300 rounded-md py-2 text-lg tracking-widest focus:outline-none focus:ring-2 focus:ring-green-500"
+        />
+
+        <button
+                id="verifyBtn"
+                onclick="verifyAndRedirect()"
+                class="mt-6 w-full bg-green-600 text-white py-2 rounded-md font-semibold hover:bg-green-700 transition duration-300"
+        >
+            Verify
+        </button>
+
+        <!-- Success Message -->
+        <p
+                id="successMessage"
+                class="mt-4 text-green-600 font-semibold text-lg hidden"
+        >
+            Admin created!
+        </p>
+    </div>
+</div>
+
+<script>
+    function showVerificationModal() {
+      document.getElementById("verificationModal").classList.remove("hidden");
+    }
+
+    function closeVerificationModal() {
+      document.getElementById("verificationModal").classList.add("hidden");
+    }
+
+    function verifyAndRedirect() {
+      const otpInput = document.getElementById("otpInput");
+      const successMsg = document.getElementById("successMessage");
+      const instructionText = document.getElementById("instructionText");
+      const verifiedText = document.getElementById("verifiedText");
+      const verifyBtn = document.getElementById("verifyBtn");
+
+      if (otpInput.value.length === 4) {
+        // Hide input, button, and instruction text
+        otpInput.style.display = "none";
+        verifyBtn.style.display = "none";
+        instructionText.style.display = "none";
+
+        // Show verified and success message
+        verifiedText.classList.remove("hidden");
+        successMsg.classList.remove("hidden");
+
+        // Wait 2 seconds then redirect
+        setTimeout(() => {
+          window.location.href = "/admin/pageUrl?page=adashboard";
+        }, 2000);
+      } else {
+        alert("Please enter a valid 4-digit code.");
+      }
+    }
+</script>
+
+</body>
+</html>

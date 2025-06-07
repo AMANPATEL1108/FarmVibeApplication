@@ -1,0 +1,110 @@
+<!-- header.html -->
+<header class="bg-gray-900 text-white py-3" xmlns:th="http://www.w3.org/1999/xhtml" th:fragment="header">
+    <div class="container mx-auto">
+        <div class="flex flex-col md:flex-row items-center justify-between">
+
+            <!-- Logo -->
+            <div class="mb-2 md:mb-0">
+                <a href="/" class="text-white no-underline hover:text-blue-300 transition">
+                    <h1 class="text-2xl font-extrabold tracking-wide">🌾 Farm Vibe</h1>
+                </a>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="flex gap-4 mb-2 md:mb-0">
+                <a href="/" class="hover:text-blue-300 transition px-2 py-1 no-underline">
+                    Home
+                </a>
+                <a href="/pageUrl?page=contact" class="hover:text-blue-300 transition px-2 py-1 no-underline">
+                    Contact
+                </a>
+                <a href="/pageUrl?page=products" class="hover:text-blue-300 transition px-2 py-1 no-underline">
+                    Products
+                </a>
+                <a href="/pageUrl?page=category" class="hover:text-blue-300 transition px-2 py-1 no-underline">
+                    Category
+                </a>
+                <a href="/pageUrl?page=about" class="hover:text-blue-300 transition px-2 py-1 no-underline">
+                    About
+                </a>
+            </nav>
+
+            <!-- Social + Auth + Profile -->
+            <div class="flex items-center gap-4 relative" id="authSection">
+
+                <!-- Sign In & Register Buttons -->
+                <a href="/pageUrl?page=signing"
+                   class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-4 py-1.5 rounded shadow transition duration-200 auth-btn">
+                    Sign In
+                </a>
+                <a href="/pageUrl?page=register"
+                   class="bg-green-500 hover:bg-green-600 text-white text-sm px-4 py-1.5 rounded shadow transition duration-200 auth-btn">
+                    Register
+                </a>
+
+                <!-- Profile Icon + Dropdown -->
+                <div class="relative hidden" id="profileMenu">
+                    <button id="profileToggle" class="focus:outline-none flex flex-col items-center" aria-haspopup="true" aria-expanded="false" aria-controls="profileDropdown" aria-label="User menu">
+                        <img src="/images/logo/user.png" alt="Profile" class="w-9 h-9 rounded-full border-2 border-white"/>
+                        <p class="text-xs text-white text-center mt-1">User</p>
+                    </button>
+                    <div id="profileDropdown"
+                         class="absolute right-0 mt-2 bg-white text-black rounded shadow-md hidden z-50 min-w-[160px]">
+                        <a href="/pageUrl?page=profile" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
+                        <a href="/pageUrl?page=order-detail" class="block px-4 py-2 hover:bg-gray-100">Orders</a>
+                        <a href="/" onclick="logout()" class="block px-4 py-2 hover:bg-gray-100">Log Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dropdown & Auth Toggle Script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const toggle = document.getElementById("profileToggle");
+            const dropdown = document.getElementById("profileDropdown");
+
+            toggle?.addEventListener("click", function (e) {
+                e.stopPropagation();
+                dropdown.classList.toggle("hidden");
+                toggle.setAttribute("aria-expanded", dropdown.classList.contains("hidden") ? "false" : "true");
+                dropdown.setAttribute("aria-hidden", dropdown.classList.contains("hidden"));
+            });
+
+            document.addEventListener("click", function () {
+                dropdown?.classList.add("hidden");
+                toggle?.setAttribute("aria-expanded", "false");
+                dropdown?.setAttribute("aria-hidden", "true");
+            });
+
+            // JWT Auth Check
+            const token = localStorage.getItem('jwtToken');
+            const issuedAt = parseInt(localStorage.getItem('jwtIssuedAt'));
+            const currentTime = new Date().getTime();
+            const isTokenValid = token && issuedAt && (currentTime - issuedAt) < (48 * 60 * 60 * 1000); // 48 hours
+
+            const profileMenu = document.getElementById("profileMenu");
+            const authButtons = document.querySelectorAll('.auth-btn');
+
+            if (isTokenValid) {
+                profileMenu.classList.remove("hidden");
+                // Hide Sign In and Register buttons
+                authButtons.forEach(btn => btn.classList.add('hidden'));
+            } else {
+                // Token invalid/expired
+                localStorage.removeItem("jwtToken");
+                localStorage.removeItem("jwtIssuedAt");
+                // Show Sign In and Register buttons
+                authButtons.forEach(btn => btn.classList.remove('hidden'));
+                profileMenu.classList.add("hidden");
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem("jwtToken");
+            localStorage.removeItem("jwtIssuedAt");
+            window.location.href = "/";
+        }
+    </script>
+</header>

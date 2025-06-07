@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Admin Orders Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+            rel="stylesheet"
+    />
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+<div class="p-6 relative">
+    <h1
+            class="text-3xl font-bold mb-6 text-center animate__animated animate__fadeInDown"
+    >
+        Admin Orders Page
+    </h1>
+
+    <!-- View Completed Orders (Top Right) -->
+    <div class="absolute right-6 top-6">
+        <a
+                href="/admin/pageUrl?page=orders-history"
+                class="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 transition"
+        >
+            View Completed Orders
+        </a>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto animate__animated animate__fadeInUp mt-12 mb-10">
+        <table class="min-w-full bg-white rounded-lg shadow-md">
+            <thead class="bg-gray-800 text-white">
+            <tr>
+                <th class="px-4 py-2 text-left">#</th>
+                <th class="px-4 py-2 text-left">Name</th>
+                <th class="px-4 py-2 text-left">Address</th>
+                <th class="px-4 py-2 text-left">Order Details</th>
+                <th class="px-4 py-2 text-left">Category</th>
+                <th class="px-4 py-2 text-left">Preferred Delivery Date</th>
+                <th class="px-4 py-2 text-left">Order Date</th>
+                <th class="px-4 py-2 text-left">Payment Status</th>
+                <th class="px-4 py-2 text-left">Delivery Status</th>
+                <th class="px-4 py-2 text-left">Confirm</th>
+                <th class="px-4 py-2 text-left">More Details</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Order Rows -->
+            <tr class="border-t hover:bg-gray-100 transition">
+                <td class="px-4 py-2">1</td>
+                <td class="px-4 py-2">Ananya Roy</td>
+                <td class="px-4 py-2">24 Lotus Enclave, Kolkata</td>
+                <td class="px-4 py-2">4kg Bananas</td>
+                <td class="px-4 py-2">Fruits</td>
+                <td class="px-4 py-2">2025-05-25</td>
+                <td class="px-4 py-2">2025-05-22</td>
+                <td class="px-4 py-2">
+                    <select class="bg-white border rounded px-2 py-1">
+                        <option>Pending</option>
+                        <option>Completed</option>
+                    </select>
+                </td>
+                <td class="px-4 py-2">
+                    <select class="bg-white border rounded px-2 py-1">
+                        <option>Not Delivered</option>
+                        <option>Delivered</option>
+                    </select>
+                </td>
+                <td class="px-4 py-2">
+                    <button
+                            onclick="showConfirmPopup()"
+                            class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
+                    >
+                        Confirm
+                    </button>
+                </td>
+                <td class="px-4 py-2">
+                    <button
+                            onclick="showMoreDetails('Ananya Roy', 'ananya.roy@example.com', '+91 9876543210')"
+                            class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
+                    >
+                        More Details
+                    </button>
+                </td>
+            </tr>
+
+            <tr class="border-t hover:bg-gray-100 transition">
+                <td class="px-4 py-2">2</td>
+                <td class="px-4 py-2">Rohit Verma</td>
+                <td class="px-4 py-2">17 Neem Marg, Jaipur</td>
+                <td class="px-4 py-2">1kg Paneer</td>
+                <td class="px-4 py-2">Dairy</td>
+                <td class="px-4 py-2">2025-05-27</td>
+                <td class="px-4 py-2">2025-05-23</td>
+                <td class="px-4 py-2">
+                    <select class="bg-white border rounded px-2 py-1">
+                        <option>Pending</option>
+                        <option>Completed</option>
+                    </select>
+                </td>
+                <td class="px-4 py-2">
+                    <select class="bg-white border rounded px-2 py-1">
+                        <option>Not Delivered</option>
+                        <option>Delivered</option>
+                    </select>
+                </td>
+                <td class="px-4 py-2">
+                    <button
+                            onclick="showConfirmPopup()"
+                            class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
+                    >
+                        Confirm
+                    </button>
+                </td>
+                <td class="px-4 py-2">
+                    <button
+                            onclick="showMoreDetails('Rohit Verma', 'rohit.verma@example.com', '+91 9123456780')"
+                            class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
+                    >
+                        More Details
+                    </button>
+                </td>
+            </tr>
+
+            <tr class="border-t hover:bg-gray-100 transition">
+                <td class="px-4 py-2">3</td>
+                <td class="px-4 py-2">Neha Kapoor</td>
+                <td class="px-4 py-2">99 Lake View, Bhopal</td>
+                <td class="px-4 py-2">500g Spinach</td>
+                <td class="px-4 py-2">Vegetables</td>
+                <td class="px-4 py-2">2025-05-24</td>
+                <td class="px-4 py-2">2025-05-21</td>
+                <td class="px-4 py-2">
+                    <select class="bg-white border rounded px-2 py-1">
+                        <option>Pending</option>
+                        <option>Completed</option>
+                    </select>
+                </td>
+                <td class="px-4 py-2">
+                    <select class="bg-white border rounded px-2 py-1">
+                        <option>Not Delivered</option>
+                        <option>Delivered</option>
+                    </select>
+                </td>
+                <td class="px-4 py-2">
+                    <button
+                            onclick="showConfirmPopup()"
+                            class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
+                    >
+                        Confirm
+                    </button>
+                </td>
+                <td class="px-4 py-2">
+                    <button
+                            onclick="showMoreDetails('Neha Kapoor', 'neha.kapoor@example.com', '+91 9988776655')"
+                            class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
+                    >
+                        More Details
+                    </button>
+                </td>
+            </tr>
+
+            <tr class="border-t hover:bg-gray-100 transition">
+                <td class="px-4 py-2">4</td>
+                <td class="px-4 py-2">Kabir Malhotra</td>
+                <td class="px-4 py-2">403 Valley Crest, Pune</td>
+                <td class="px-4 py-2">2 Dozen Eggs</td>
+                <td class="px-4 py-2">Poultry</td>
+                <td class="px-4 py-2">2025-05-26</td>
+                <td class="px-4 py-2">2025-05-22</td>
+                <td class="px-4 py-2">
+                    <select class="bg-white border rounded px-2 py-1">
+                        <option>Pending</option>
+                        <option>Completed</option>
+                    </select>
+                </td>
+                <td class="px-4 py-2">
+                    <select class="bg-white border rounded px-2 py-1">
+                        <option>Not Delivered</option>
+                        <option>Delivered</option>
+                    </select>
+                </td>
+                <td class="px-4 py-2">
+                    <button
+                            onclick="showConfirmPopup()"
+                            class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
+                    >
+                        Confirm
+                    </button>
+                </td>
+                <td class="px-4 py-2">
+                    <button
+                            onclick="showMoreDetails('Kabir Malhotra', 'kabir.m@example.com', '+91 9456123789')"
+                            class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
+                    >
+                        More Details
+                    </button>
+                </td>
+            </tr>
+
+            <tr class="border-t hover:bg-gray-100 transition">
+                <td class="px-4 py-2">5</td>
+                <td class="px-4 py-2">Fatima Sheikh</td>
+                <td class="px-4 py-2">12 Garden Grove, Hyderabad</td>
+                <td class="px-4 py-2">1kg Chicken</td>
+                <td class="px-4 py-2">Meat</td>
+                <td class="px-4 py-2">2025-05-28</td>
+                <td class="px-4 py-2">2025-05-23</td>
+                <td class="px-4 py-2">
+                    <select class="bg-white border rounded px-2 py-1">
+                        <option>Pending</option>
+                        <option>Completed</option>
+                    </select>
+                </td>
+                <td class="px-4 py-2">
+                    <select class="bg-white border rounded px-2 py-1">
+                        <option>Not Delivered</option>
+                        <option>Delivered</option>
+                    </select>
+                </td>
+                <td class="px-4 py-2">
+                    <button
+                            onclick="showConfirmPopup()"
+                            class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
+                    >
+                        Confirm
+                    </button>
+                </td>
+                <td class="px-4 py-2">
+                    <button
+                            onclick="showMoreDetails('Fatima Sheikh', 'fatima.s@example.com', '+91 9871234567')"
+                            class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
+                    >
+                        More Details
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Confirm Modal -->
+<div
+        id="confirmModal"
+        class="hidden fixed inset-0  bg-opacity-50 flex items-center justify-center z-50"
+>
+    <div
+            class="bg-white p-6 rounded-lg shadow-xl w-96 animate__animated animate__fadeInDown max-w-full"
+    >
+        <h2 class="text-2xl font-semibold mb-4">Confirm Order</h2>
+        <p class="mb-6">Are you sure you want to confirm this order?</p>
+        <div class="flex justify-end space-x-4">
+            <button
+                    onclick="hidePopup()"
+                    class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 transition"
+            >
+                Cancel
+            </button>
+            <button
+                    onclick="confirmOrder()"
+                    class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+            >
+                Confirm
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Success Popup -->
+<div
+        id="successPopup"
+        class="hidden fixed inset-0 bg-gray-100 bg-opacity-40 flex items-center justify-center z-50"
+>
+
+    <div
+            class="bg-white px-6 py-4 rounded shadow-lg text-green-700 font-semibold animate__animated animate__fadeInDown"
+    >
+        Order confirmed successfully!
+    </div>
+</div>
+
+<!-- More Details Modal -->
+<div
+        id="moreDetailsModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+>
+    <div
+            class="bg-white p-6 rounded-lg shadow-xl w-96 animate__animated animate__fadeInDown max-w-full"
+    >
+        <h2 class="text-2xl font-semibold mb-4">Customer Details</h2>
+        <p><strong>Name:</strong> <span id="detailName"></span></p>
+        <p class="mt-2"><strong>Email:</strong> <span id="detailEmail"></span></p>
+        <p class="mt-2"><strong>Mobile Number:</strong> <span id="detailMobile"></span></p>
+        <div class="text-right mt-6">
+            <button
+                    onclick="closeMoreDetails()"
+                    class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+            >
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Show Confirm Modal
+    function showConfirmPopup() {
+      document.getElementById("confirmModal").classList.remove("hidden");
+    }
+    // Hide Confirm Modal
+    function hidePopup() {
+      document.getElementById("confirmModal").classList.add("hidden");
+    }
+    // Confirm Order
+    function confirmOrder() {
+      // Hide Confirm Modal
+      hidePopup();
+
+      // Show Success Popup
+      const successPopup = document.getElementById("successPopup");
+      successPopup.classList.remove("hidden");
+
+      // Hide success popup after 2 seconds
+      setTimeout(() => {
+        successPopup.classList.add("hidden");
+      }, 2000);
+    }
+
+    // Show More Details Modal with passed name, email and mobile number
+    function showMoreDetails(name, email, mobile) {
+      document.getElementById("detailName").textContent = name;
+      document.getElementById("detailEmail").textContent = email;
+      document.getElementById("detailMobile").textContent = mobile;
+      document.getElementById("moreDetailsModal").classList.remove("hidden");
+    }
+
+    // Close More Details Modal
+    function closeMoreDetails() {
+      document.getElementById("moreDetailsModal").classList.add("hidden");
+    }
+</script>
+</body>
+</html>

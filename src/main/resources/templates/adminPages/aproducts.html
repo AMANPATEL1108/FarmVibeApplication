@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Admin Products | Farm Vibe</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.5s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans min-h-screen">
+
+<!-- Page Heading -->
+<div class="text-center mt-10 mb-6 animate-fade-in-up">
+    <h1 class="text-3xl font-bold text-green-700">Admin Products</h1>
+</div>
+
+<!-- Table Container -->
+<div class="max-w-7xl mx-auto bg-white p-6 rounded-lg shadow-lg animate-fade-in-up overflow-x-auto mb-10">
+    <div class="flex justify-end mb-4">
+        <a href="/admin/pageUrl?page=aaddProduct"
+
+           class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition duration-300">Add Product</a>
+    </div>
+
+    <table class="min-w-full table-auto text-sm text-left text-gray-700">
+        <thead class="bg-gray-100 uppercase text-gray-600 text-xs">
+        <tr>
+            <th class="px-4 py-3">No</th>
+            <th class="px-4 py-3">Image</th>
+            <th class="px-4 py-3">Product Name</th>
+            <th class="px-4 py-3">Category</th>
+            <th class="px-4 py-3">Description</th>
+            <th class="px-4 py-3">Price/kg</th>
+            <th class="px-4 py-3">Quantity (kg)</th>
+            <th class="px-4 py-3 text-right">Actions</th>
+        </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+
+        <!-- Example Row -->
+        <tr class="hover:bg-gray-50">
+            <td class="px-4 py-3 font-medium">1</td>
+            <td class="px-4 py-3">
+                <img src="/images/vegetables/tomato.jpeg" alt="Product 1" class="w-12 h-12 object-cover rounded">
+            </td>
+            <td class="px-4 py-3">Fresh Mango</td>
+            <td class="px-4 py-3">Fruits</td>
+            <td class="px-4 py-3">Juicy ripe mangoes from local farms</td>
+            <td class="px-4 py-3">₹100</td>
+            <td class="px-4 py-3">2</td>
+            <td class="px-4 py-3 text-right space-x-2">
+                <a href="/admin/pageUrl?page=editProduct"
+                   class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded">Edit</a>
+                <button onclick="confirmDelete()" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">Delete</button>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg w-80 shadow-xl animate-fade-in-up">
+        <h2 class="text-lg font-semibold mb-4 text-red-600">Are you sure you want to delete?</h2>
+        <div class="flex justify-end space-x-4">
+            <button onclick="deleteSuccess()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">Yes</button>
+            <button onclick="closeModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Success Modal -->
+<div id="successModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-4 rounded shadow-md text-green-700 font-semibold animate-fade-in-up">
+        Deleted Successfully!
+    </div>
+</div>
+
+<script>
+    function confirmDelete() {
+        document.getElementById('deleteModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
+    }
+
+    function deleteSuccess() {
+        closeModal();
+        document.getElementById('successModal').classList.remove('hidden');
+        setTimeout(() => {
+            document.getElementById('successModal').classList.add('hidden');
+            // Here you can also remove the product row or refresh the page
+        }, 1000);
+    }
+</script>
+
+</body>
+</html>

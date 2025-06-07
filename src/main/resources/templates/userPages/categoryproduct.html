@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Category Products</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script>
+        // Get category from query string
+        window.onload = function () {
+            const params = new URLSearchParams(window.location.search);
+            const category = params.get("category") || "Category";
+            document.getElementById("categoryName").innerText = category;
+        };
+    </script>
+</head>
+<div class="bg-yellow-50 font-sans pt-10 pb-10">
+
+    <!-- Page Heading -->
+    <div class="text-center mb-6 animate__animated animate__fadeInDown">
+        <h1 class="text-4xl font-bold text-green-800 mb-10">Products in <span id="categoryName">Category</span></h1>
+    </div>
+
+    <!-- Static Product Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto animate__animated animate__fadeInUp">
+        <!-- Product Card 1 -->
+        <div class="bg-white p-4 rounded-xl shadow hover:shadow-lg transition duration-300 text-center">
+            <img src="/images/vegetables/tomato2.jpeg" alt="Tomato" class="w-full h-48 object-cover rounded mb-3">
+            <h2 class="text-xl font-semibold text-green-700 mb-1">Fresh Tomato</h2>
+            <p class="text-gray-600 mb-2">₹40 / kg</p>
+            <a href="/pageUrl?page=productdetails"
+               th:classappend="${activePage == 'productdetails'} ? 'text-blue-400 font-bold' : 'text-white'"
+               class="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">View</a>
+        </div>
+
+        <!-- Product Card 2 -->
+        <div class="bg-white p-4 rounded-xl shadow hover:shadow-lg transition duration-300 text-center">
+            <img src="/images/vegetables/tomato2.jpeg" alt="Carrot" class="w-full h-48 object-cover rounded mb-3">
+            <h2 class="text-xl font-semibold text-green-700 mb-1">Organic Carrot</h2>
+            <p class="text-gray-600 mb-2">₹50 / kg</p>
+            <a href="/pageUrl?page=productdetails"
+               th:classappend="${activePage == 'productdetails'} ? 'text-blue-400 font-bold' : 'text-white'"
+               class="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">View</a>
+        </div>
+
+        <!-- Add more cards as needed -->
+    </div>
+</div>
+
+</html>

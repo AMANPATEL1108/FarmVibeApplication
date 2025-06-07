@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Order History | Farm Vibe</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+    <style>
+        @keyframes slideFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-slide-fade-in {
+            animation: slideFadeIn 0.6s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen font-sans">
+
+<!-- Order History Container -->
+<div class="max-w-5xl mx-auto mt-6 px-4 space-y-6">
+
+    <!-- Order Card 1 -->
+    <div class="bg-white shadow-md rounded-lg p-6 animate-slide-fade-in">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+            <div class="mb-2 md:mb-0 space-y-1">
+                <p class="text-gray-500 text-sm">Order Date: <span class="font-medium text-gray-800">May 10, 2025</span></p>
+                <p class="text-gray-500 text-sm">Delivery Date: <span class="font-medium text-gray-800">May 14, 2025</span></p>
+                <p class="text-gray-500 text-sm">Delivery Address: <span class="font-medium text-gray-800">123 Green Street, Farm City</span></p>
+                <p class="text-gray-500 text-sm">Payment Type: <span class="font-medium text-gray-800">Online</span></p>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full table-auto text-sm divide-y divide-gray-200">
+                <thead class="bg-gray-100 text-gray-700">
+                <tr>
+                    <th class="px-4 py-2 text-left">Product Name</th>
+                    <th class="px-4 py-2 text-left">Category</th>
+                    <th class="px-4 py-2 text-center">Quantity</th>
+                    <th class="px-4 py-2 text-center">Price/kg</th>
+                    <th class="px-4 py-2 text-right">Total</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-2">Organic Banana</td>
+                    <td class="px-4 py-2">Fruits</td>
+                    <td class="px-4 py-2 text-center">3</td>
+                    <td class="px-4 py-2 text-center">₹50</td>
+                    <td class="px-4 py-2 text-right font-semibold">₹150</td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-2">Red Onion</td>
+                    <td class="px-4 py-2">Vegetables</td>
+                    <td class="px-4 py-2 text-center">2</td>
+                    <td class="px-4 py-2 text-center">₹30</td>
+                    <td class="px-4 py-2 text-right font-semibold">₹60</td>
+                </tr>
+                </tbody>
+                <tfoot class="bg-gray-50">
+                <tr>
+                    <td colspan="4" class="px-4 py-2 text-right font-semibold">Grand Total</td>
+                    <td class="px-4 py-2 text-right font-bold text-green-700">₹210</td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <!-- Order Card 2 -->
+    <div class="bg-white shadow-md rounded-lg p-6 animate-slide-fade-in">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+            <div class="mb-2 md:mb-0 space-y-1">
+                <p class="text-gray-500 text-sm">Order Date: <span class="font-medium text-gray-800">April 24, 2025</span></p>
+                <p class="text-gray-500 text-sm">Delivery Date: <span class="font-medium text-gray-800">April 29, 2025</span></p>
+                <p class="text-gray-500 text-sm">Delivery Address: <span class="font-medium text-gray-800">Plot 45, Eco Farm Lane</span></p>
+                <p class="text-gray-500 text-sm">Payment Type: <span class="font-medium text-gray-800">Cash on Delivery</span></p>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full table-auto text-sm divide-y divide-gray-200">
+                <thead class="bg-gray-100 text-gray-700">
+                <tr>
+                    <th class="px-4 py-2 text-left">Product Name</th>
+                    <th class="px-4 py-2 text-left">Category</th>
+                    <th class="px-4 py-2 text-center">Quantity</th>
+                    <th class="px-4 py-2 text-center">Price/kg</th>
+                    <th class="px-4 py-2 text-right">Total</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-2">Basmati Rice</td>
+                    <td class="px-4 py-2">Grains</td>
+                    <td class="px-4 py-2 text-center">4</td>
+                    <td class="px-4 py-2 text-center">₹70</td>
+                    <td class="px-4 py-2 text-right font-semibold">₹280</td>
+                </tr>
+                </tbody>
+                <tfoot class="bg-gray-50">
+                <tr>
+                    <td colspan="4" class="px-4 py-2 text-right font-semibold">Grand Total</td>
+                    <td class="px-4 py-2 text-right font-bold text-green-700">₹280</td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="flex justify-end">
+        <a href="/pageUrl?page=order-detail"
+           th:classappend="${activePage == 'order-detail'} ? 'text-blue-400 font-bold' : 'text-black'"
+           class="inline-block bg-blue-600 text-white px-6 py-2 mt-6 mb-10 rounded hover:bg-blue-700 transition duration-300">
+            ← Back to Order Details
+        </a>
+    </div>
+
+</div>
+
+</body>
+</html>

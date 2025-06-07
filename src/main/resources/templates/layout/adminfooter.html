@@ -1,0 +1,54 @@
+<html lang="en">
+<head>
+    <style>
+        /* Body or main container setup */
+        body, html {
+          margin: 0;
+          padding: 0;
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+        }
+
+        /* Content area fills the space */
+        main {
+          flex-grow: 1;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Your footer -->
+<footer class="text-white bg-gray-900 py-3" xmlns:th="http://www.w3.org/1999/xhtml" th:fragment="adminfooter">
+    <div class="container bg-gray-900 h-36 w-full bottom-0">
+        <div class="row text-center bg-gray-900 text-md-start">
+
+            <div class="col-md-4 mb-4 md:mb-0">
+                <h5 class="text-2xl font-bold mb-2">🌾 Farm Vibe</h5>
+                <p class="text-sm text-gray-300">&copy; 2025 Farm Vibe. All rights reserved.</p>
+            </div>
+
+            <div class="col-md-4 mb-4 md:mb-0">
+                <h5 class="text-xl font-semibold mb-2">Quick Links</h5>
+                <ul class="list-unstyled text-sm space-y-1">
+                    <li><a href="/pageUrl?page=home" class="text-white no-underline hover:text-gray-300 transition">Home</a></li>
+                    <li><a href="/pageUrl?page=about" class="text-white no-underline hover:text-gray-300 transition">About</a></li>
+                    <li><a href="/pageUrl?page=contact" class="text-white no-underline hover:text-gray-300 transition">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-4">
+                <h5 class="text-xl font-semibold mb-2">Follow Us</h5>
+                <div class="flex justify-center md:justify-start gap-4 text-2xl">
+                    <a href="#" class="text-gray-300 hover:text-blue-400 transition duration-300"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-gray-300 hover:text-sky-400 transition duration-300"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="text-gray-300 hover:text-pink-400 transition duration-300"><i class="bi bi-instagram"></i></a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

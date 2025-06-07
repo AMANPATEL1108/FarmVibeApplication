@@ -1,0 +1,212 @@
+/* Custom colors and styles */
+body {
+  background: linear-gradient(to bottom right, #d9f0d9, #f9fff9);
+  color: #2c6b2c;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.hero {
+  background: url('/images/farmimages/farm-hero.webp') no-repeat center center/cover;
+  height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Removed text-shadow and color white */
+  /* Changed text color to pure black for clarity */
+  color: black;
+  margin-bottom: 3rem;
+  border-radius: 0.5rem;
+}
+
+.hero-title {
+  font-weight: 700;
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+}
+
+.accent-green {
+  color: #2f7a2f;
+}
+
+.section-heading {
+  margin-bottom: 2rem;
+  font-weight: 700;
+}
+
+.content-img {
+  border-radius: 0.5rem;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+  height: auto;
+}
+
+.custom-btn {
+  background-color: #2f7a2f;
+  color: white;
+  border-radius: 30px;
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+  border: none;
+}
+
+.custom-btn:hover {
+  background-color: #1e4e1e;
+  color: white;
+}
+
+.about-text-container {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 2rem auto;
+}
+
+.subtitle {
+  font-weight: 600;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+}
+
+ .hero {
+
+            padding-bottom: 1rem;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #14532d;
+        }
+
+        .accent-green {
+            color: #166534;
+        }
+
+        .custom-btn {
+            background-color: #166534;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .custom-btn:hover {
+            background-color: #14532d;
+        }
+
+        .content-img {
+            width: 70.00%; /* 11/12 width (~10% smaller) */
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .about-text-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .hero {
+          background: url('/images/farmimages/farm-hero.webp') no-repeat center center/cover;
+          height: 50vh; /* reduced from 60vh (40% smaller) */
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: black;
+          margin-bottom: 2rem;
+          border-radius: 0.5rem;
+          padding: 1rem; /* reduce content space */
+        }
+
+        .about-text-container {
+          padding: 1rem; /* smaller internal spacing */
+          max-width: 600px; /* reduced width */
+          margin: 1rem auto;
+        }
+
+        /* General Body Styling */
+        body {
+          background: linear-gradient(to bottom right, #d9f0d9, #f9fff9);
+          color: #2c6b2c;
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          margin: 0;
+          padding: 0;
+        }
+
+        /* Container Padding */
+        .container {
+          padding-left: 2rem;
+          padding-right: 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+          background: url('/images/farmimages/farm-hero.webp') no-repeat center center/cover;
+          height: 50vh; /* Reduced height */
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: black;
+          margin-bottom: 2rem;
+          border-radius: 0.5rem;
+          padding: 1rem;
+        }
+
+        /* Hero Text */
+        .hero-title {
+          font-size: 2.5rem;
+          font-weight: bold;
+          color: #14532d;
+          margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+          font-weight: 600;
+          margin-bottom: 1rem;
+          font-size: 1.25rem;
+        }
+
+        /* Text Container in Hero */
+        .about-text-container {
+          max-width: 600px;
+          margin: 1rem auto;
+          padding: 1rem;
+        }
+
+        /* Section Headings */
+        .section-heading {
+          margin-bottom: 2rem;
+          font-weight: 700;
+          color: #166534;
+        }
+
+        /* Images */
+        .content-img {
+          width: 70%; /* Shrunk by ~30% */
+          border-radius: 12px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Custom Button */
+        .custom-btn {
+          background-color: #166534;
+          color: white;
+          padding: 10px 20px;
+          border: none;
+          border-radius: 8px;
+          font-weight: 600;
+          transition: background-color 0.3s ease;
+        }
+
+        .custom-btn:hover {
+          background-color: #14532d;
+          color: white;
+        }
+
+        /* Medium gap between image and text */
+        .row > div {
+          padding: 1rem;
+        }
+
+

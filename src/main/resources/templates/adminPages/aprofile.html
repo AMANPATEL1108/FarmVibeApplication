@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Admin Profile | Farm Vibe</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+</head>
+<body class="bg-gray-100">
+<div class="container mx-auto py-8">
+    <div class="flex justify-center gap-6">
+
+        <!-- Left Panel: User Info -->
+        <div class="bg-white p-6 rounded-lg shadow-lg w-full md:w-1/2">
+            <div class="flex items-center space-x-4 mb-6">
+                <img src="/images/logo/user.png" alt="Profile Image"
+                     class="w-24 h-24 rounded-full border-2 border-gray-300">
+                <div>
+                    <h2 class="text-xl font-semibold"> Profile</h2>
+                </div>
+            </div>
+            <form id="profile-form" class="space-y-3">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Name</label>
+                    <input type="text" value="Aman Kumar" id="profileName"
+                           class="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" value="aman@example.com" id="profileEmail"
+                           class="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Phone</label>
+                    <input type="text" value="9876543210" id="profilePhone"
+                           class="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Address</label>
+                    <input type="text" value="Patna, Bihar, India" id="profileAddress"
+                           class="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled>
+                </div>
+                <button type="button" onclick="openModal('details')"
+                        class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+                    Edit Details
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<!-- Modals for editing, verifying, OTP, and success -->
+<div id="modals"></div>
+
+<script>
+    let currentAction = '';
+    let currentAddressId = null;
+
+    function openModal(action) {
+        currentAction = action;
+        if (action === 'details') {
+            document.getElementById('modals').innerHTML = getEditDetailsModal();
+            document.getElementById('modalName').value = document.getElementById('profileName').value;
+            document.getElementById('modalEmail').value = document.getElementById('profileEmail').value;
+            document.getElementById('modalPhone').value = document.getElementById('profilePhone').value;
+            document.getElementById('modalAddress').value = document.getElementById('profileAddress').value;
+            document.getElementById('editModal').classList.remove('hidden');
+        }
+    }
+
+    function closeModal(id) {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+    }
+
+    function updateDetails() {
+        closeModal('editModal');
+        showVerificationModal();
+    }
+
+    function openAddressModal(id) {
+        currentAction = 'editAddress';
+        currentAddressId = id;
+        const card = document.getElementById(`address${id}`);
+        const addr = card.querySelector('.addr').value;
+        const city = card.querySelector('.city').value;
+        const pin = card.querySelector('.pin').value;
+
+        document.getElementById('modals').innerHTML = getEditAddressModal(addr, city, pin);
+        document.getElementById('editAddressModal').classList.remove('hidden');
+    }
+
+    function updateAddress() {
+        closeModal('editAddressModal');
+        showVerificationModal();
+    }
+
+    function confirmDeleteAddress(id) {
+        currentAction = 'deleteAddress';
+        currentAddressId = id;
+        showVerificationModal();
+    }
+
+    function showVerificationModal() {
+        document.getElementById('modals').innerHTML += getVerificationModal();
+        document.getElementById('verifyOptionModal').classList.remove('hidden');
+    }
+
+    function selectVerification(method) {
+        document.getElementById('verifyOptionModal').classList.add('hidden');
+        document.getElementById('modals').innerHTML += getOTPModal();
+        document.getElementById('otpModal').classList.remove('hidden');
+    }
+
+    function verifyOTP() {
+        const otp = document.getElementById('otpInput').value;
+        if (otp.length === 4 && /^\d+$/.test(otp)) {
+            document.getElementById('otpModal').classList.add('hidden');
+
+            if (currentAction === 'details') {
+                document.getElementById('profileName').value = document.getElementById('modalName').value;
+                document.getElementById('profileEmail').value = document.getElementById('modalEmail').value;
+                document.getElementById('profilePhone').value = document.getElementById('modalPhone').value;
+                document.getElementById('profileAddress').value = document.getElementById('modalAddress').value;
+                showSuccess('Details updated successfully!');
+            } else if (currentAction === 'editAddress') {
+                const card = document.getElementById(`address${currentAddressId}`);
+                const [addr, city, pin] = [
+                    document.getElementById('modalAddressEdit').value,
+                    document.getElementById('modalCityEdit').value,
+                    document.getElementById('modalPinEdit').value
+                ];
+
+                card.querySelector('.addr').value = addr;
+                card.querySelector('.city').value = city;
+                card.querySelector('.pin').value = pin;
+
+                card.querySelector('p strong').textContent = addr;
+                card.querySelectorAll('span')[0].textContent = city;
+                card.querySelectorAll('span')[1].textContent = pin;
+
+                showSuccess('Address updated successfully!');
+            } else if (currentAction === 'deleteAddress') {
+                document.getElementById(`address${currentAddressId}`).remove();
+                showSuccess('Address deleted successfully!');
+            }
+        } else {
+            alert("Please enter a valid 4-digit OTP.");
+        }
+    }
+
+    function showSuccess(message) {
+        document.getElementById('modals').innerHTML += getSuccessModal(message);
+        document.getElementById('successModal').classList.remove('hidden');
+        setTimeout(() => {
+            document.getElementById('successModal').classList.add('hidden');
+            document.getElementById('modals').innerHTML = '';
+        }, 2000);
+    }
+
+    function getEditDetailsModal() {
+        return `
+        <div id="editModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div class="bg-white p-6 rounded-lg w-full max-w-md relative animate__animated animate__fadeIn">
+            <button onclick="closeModal('editModal')" class="absolute top-2 right-3 text-gray-500 hover:text-red-600 text-2xl font-bold">&times;</button>
+            <h3 class="text-lg font-semibold mb-4">Edit Your Details</h3>
+            <form class="space-y-3">
+              <input type="text" id="modalName" class="w-full p-2 border rounded" placeholder="Name">
+              <input type="email" id="modalEmail" class="w-full p-2 border rounded" placeholder="Email">
+              <input type="text" id="modalPhone" class="w-full p-2 border rounded" placeholder="Phone">
+              <input type="text" id="modalAddress" class="w-full p-2 border rounded" placeholder="Address">
+              <button type="button" onclick="updateDetails()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">Update Details</button>
+            </form>
+          </div>
+        </div>`;
+    }
+
+    function getEditAddressModal(address = '', city = '', pin = '') {
+        return `
+        <div id="editAddressModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div class="bg-white p-6 rounded-lg w-full max-w-md relative animate__animated animate__fadeInDown">
+            <button onclick="closeModal('editAddressModal')" class="absolute top-2 right-3 text-gray-500 hover:text-red-600 text-2xl font-bold">&times;</button>
+            <h3 class="text-lg font-semibold mb-4">Edit Address</h3>
+            <form class="space-y-3">
+              <input type="text" id="modalAddressEdit" value="${address}" class="w-full p-2 border rounded" placeholder="Address">
+              <input type="text" id="modalCityEdit" value="${city}" class="w-full p-2 border rounded" placeholder="City">
+              <input type="text" id="modalPinEdit" value="${pin}" class="w-full p-2 border rounded" placeholder="Pin">
+              <button type="button" onclick="updateAddress()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">Update Address</button>
+            </form>
+          </div>
+        </div>`;
+    }
+
+    function getVerificationModal() {
+        return `
+        <div id="verifyOptionModal" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+          <div class="bg-white p-6 rounded-lg w-full max-w-sm animate__animated animate__fadeInDown relative">
+            <button onclick="closeModal('verifyOptionModal')" class="absolute top-2 right-3 text-gray-500 hover:text-red-600 text-2xl font-bold">&times;</button>
+            <h3 class="text-lg font-semibold mb-4">Choose Verification Method</h3>
+            <div class="space-y-3">
+              <button onclick="selectVerification('email')" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Verify via Email</button>
+              <button onclick="selectVerification('phone')" class="w-full bg-yellow-500 text-white py-2 rounded hover:bg-yellow-600">Verify via Phone</button>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function getOTPModal() {
+        return `
+        <div id="otpModal" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+          <div class="bg-white p-6 rounded-lg w-full max-w-sm animate__animated animate__fadeInUp relative">
+            <button onclick="closeModal('otpModal')" class="absolute top-2 right-3 text-gray-500 hover:text-red-600 text-2xl font-bold">&times;</button>
+            <h3 class="text-lg font-semibold mb-4">Enter OTP</h3>
+            <input type="text" maxlength="4" id="otpInput"
+                   class="mt-1 block w-full border border-gray-300 rounded-md p-2 text-center text-xl tracking-widest"
+                   placeholder="____">
+            <button onclick="verifyOTP()" class="mt-4 w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">Verify</button>
+          </div>
+        </div>`;
+    }
+
+    function getSuccessModal(message) {
+        return `
+        <div id="successModal" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+          <div class="bg-white p-6 rounded-lg w-full max-w-sm text-center animate__animated animate__zoomIn">
+            <svg class="mx-auto w-16 h-16 text-green-500 mb-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <p class="text-lg font-semibold">${message}</p>
+          </div>
+        </div>`;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit Product | Farm Vibe</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+
+    <style>
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-fade-in-up {
+          animation: fadeInUp 0.5s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen font-sans">
+
+<!-- Header -->
+<div class="text-center mt-8 animate-fade-in-up">
+    <h1 class="text-3xl font-bold text-green-700">Edit Product</h1>
+    <p class="text-gray-500">Update product details below</p>
+</div>
+
+<!-- Form Container -->
+<div class="max-w-3xl mx-auto mt-8 bg-white p-8 rounded-lg shadow-lg animate-fade-in-up">
+    <form action="/update-product" method="POST" enctype="multipart/form-data" class="space-y-6">
+
+        <!-- Product Name -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
+            <input type="text" name="productName" value="Fresh Mango" required
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"/>
+        </div>
+
+        <!-- Category -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+            <select name="category" required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                <option selected>Fruits</option>
+                <option>Vegetables</option>
+                <option>Grains</option>
+                <option>Dairy</option>
+            </select>
+        </div>
+
+        <!-- Price and Quantity -->
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Price per kg (₹)</label>
+                <input type="number" name="price" value="100" required
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"/>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Available Quantity (kg)</label>
+                <input type="number" name="quantity" value="10" required
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"/>
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea name="description" rows="4" placeholder="Write product details..."
+                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">Delicious ripe mangoes from our farm.</textarea>
+        </div>
+
+        <!-- Product Image -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Product Image</label>
+            <div class="flex items-center space-x-4">
+                <img src="/images/vegetables/tomato.jpeg" alt="Current Image"
+                     class="w-24 h-24 rounded object-cover border border-gray-300"/>
+                <input type="file" name="productImage"
+                       class="px-3 py-2 border rounded-lg text-sm border-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:bg-green-500 file:text-white hover:file:bg-green-600"/>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex justify-end space-x-4 mt-6">
+            <a
+
+                    href="/admin/pageUrl?page=aproducts"
+                    th:classappend="${activePage == 'aproducts'} ? 'text-blue-400 font-bold' : 'text-white'"
+
+
+                    class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium px-5 py-2 rounded-lg transition">Cancel</a>
+            <a
+
+                    href="/admin/pageUrl?page=aproducts"
+                    th:classappend="${activePage == 'aproducts'} ? 'text-blue-400 font-bold' : 'text-white'"
+
+                    class="bg-green-600 hover:bg-green-700 text-white font-medium px-6 py-2 rounded-lg transition">Save
+                Changes</a>
+        </div>
+
+    </form>
+</div>
+
+</body>
+</html>

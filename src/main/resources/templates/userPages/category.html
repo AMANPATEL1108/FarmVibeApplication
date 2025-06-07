@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Farm Vibe - Categories</title>
+
+    <style>
+        img:hover {
+            transform: scale(1.05);
+            transition: transform 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+<div class="bg-yellow-50 font-sans pb-10">
+
+    <!-- Section Heading -->
+    <section class=" text-center pb-10 animate__animated animate__fadeInDown pt-3
+">
+        <h2 class="text-4xl font-bold text-green-800 mb-2">Our Categories</h2>
+        <p class="text-gray-600 text-base max-w-2xl mx-auto">
+            Explore our diverse product categories grown with care and sustainability.
+        </p>
+    </section>
+
+    <!-- Categories Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 max-w-7xl mx-auto mb-7">
+
+        <!-- Category 1 -->
+        <div class="bg-white rounded-xl shadow-md p-4 text-center animate__animated animate__fadeInUp animate__delay-1s">
+            <img src="/images/vegetables/tomato2.jpeg" alt="Vegetables"
+                 class="w-full h-40 object-cover rounded mb-3">
+            <a href="pageUrl?page=categoryproduct"
+               th:classappend="${activePage == 'categoryproducts'} ? 'text-blue-400 font-bold' : ''"
+               class="text-xl font-semibold text-green-700">Vegetables</a>
+        </div>
+
+        <!-- Category 2 -->
+        <div class="bg-white rounded-xl shadow-md p-4 text-center animate__animated animate__fadeInUp animate__delay-1s">
+            <img src="/images/vegetables/tomato2.jpeg" alt="Fruits"
+                 class="w-full h-40 object-cover rounded mb-3">
+            <a href="pageUrl?page=categoryproduct"
+               th:classappend="${activePage == 'categoryproducts'} ? 'text-blue-400 font-bold' : ''"
+               class="text-xl font-semibold text-green-700">Fruits</a>
+        </div>
+
+
+        <!-- Category 3 -->
+        <div class="bg-white rounded-xl shadow-md p-4 text-center animate__animated animate__fadeInUp animate__delay-2s">
+            <img src="/images/vegetables/tomato2.jpeg" alt="Grains"
+                 class="w-full h-40 object-cover rounded mb-3">
+            <a href="pageUrl?page=categoryproduct"
+               th:classappend="${activePage == 'categoryproducts'} ? 'text-blue-400 font-bold' : ''"
+               class="text-xl font-semibold text-green-700">Grains</a>
+        </div>
+
+        <!-- Category 4 -->
+        <div class="bg-white rounded-xl shadow-md p-4 text-center animate__animated animate__fadeInUp animate__delay-2s">
+            <img src="/images/vegetables/tomato2.jpeg" alt="Herbs"
+                 class="w-full h-40 object-cover rounded mb-3">
+            <a
+                    href="pageUrl?page=categoryproduct"
+                    th:classappend="${activePage == 'categoryproducts'} ? 'text-blue-400 font-bold' : ''"
+
+                    class="text-xl font-semibold text-green-700">Herbs</a>
+        </div>
+
+        <!-- Category 5 -->
+        <div class="bg-white rounded-xl shadow-md p-4 text-center animate__animated animate__fadeInUp animate__delay-3s">
+            <img src="/images/vegetables/tomato2.jpeg" alt="Dairy"
+                 class="w-full h-40 object-cover rounded mb-3">
+
+            <a href="pageUrl?page=categoryproduct"
+               th:classappend="${activePage == 'categoryproducts'} ? 'text-blue-400 font-bold' : ''"
+
+               class="text-xl font-semibold text-green-700">Dairy Products</a>
+        </div>
+
+        <!-- Category 6 -->
+        <div class="bg-white rounded-xl shadow-md p-4 text-center animate__animated animate__fadeInUp animate__delay-3s">
+            <img src="/images/vegetables/tomato2.jpeg" alt="Dairy"
+                 class="w-full h-40 object-cover rounded mb-3">
+            <a
+                    href="pageUrl?page=categoryproduct"
+                    th:classappend="${activePage == 'categoryproducts'} ? 'text-blue-400 font-bold' : ''"
+                    class="text-xl font-semibold text-green-700">Dairy Products</a>
+        </div>
+
+    </div>
+
+</div>
+</body>
+</html>

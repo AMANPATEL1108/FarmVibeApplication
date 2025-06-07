@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Farm Vibe - Products</title>
+    <style>
+        .product-box {
+            transition: transform 0.4s ease;
+        }
+
+        .product-box:hover {
+            transform: scale(1.05);
+        }
+
+        a.product-link {
+            color: #15803d; /* Tailwind's green-700 */
+            text-decoration: none;
+        }
+
+        a.product-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Section Heading -->
+<section class="text-center mb-12 animate__animated animate__fadeInDown mt-5">
+    <h2 class="text-4xl font-bold text-green-800 mb-2">Our Products</h2>
+    <p class="text-gray-600 text-base max-w-2xl mx-auto">
+        We offer a variety of organic farm products with premium quality.
+    </p>
+</section>
+
+<!-- Products Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 max-w-7xl mx-auto mb-7">
+
+    <!-- Product 1 -->
+    <div class="bg-white rounded-xl shadow-md p-4 text-center animate__animated animate__fadeInUp animate__delay-1s product-box">
+        <img src="/images/vegetables/tomato.jpeg" alt="Tomato" class="w-full h-40 object-cover rounded mb-3">
+        <h3 class="text-xl font-semibold">
+            <a href="/pageUrl?page=productdetails" class="product-link">Fresh Tomatoes</a>
+        </h3>
+        <p class="text-sm text-gray-600">₹40 / kg</p>
+        <p class="text-sm text-gray-500">Weight: 1 kg</p>
+    </div>
+
+    <!-- Product 2 -->
+    <div class="bg-white rounded-xl shadow-md p-4 text-center animate__animated animate__fadeInUp animate__delay-1s product-box">
+        <img src="/images/vegetables/tomato.jpeg" alt="Potato" class="w-full h-40 object-cover rounded mb-3">
+        <h3 class="text-xl font-semibold">
+            <a href="/pageUrl?page=productdetails" class="product-link">Organic Potatoes</a>
+        </h3>
+        <p class="text-sm text-gray-600">₹25 / kg</p>
+        <p class="text-sm text-gray-500">Weight: 1 kg</p>
+    </div>
+
+    <!-- Product 3 -->
+    <div class="bg-white rounded-xl shadow-md p-4 text-center animate__animated animate__fadeInUp animate__delay-2s product-box">
+        <img src="/images/vegetables/tomato.jpeg" alt="Onion" class="w-full h-40 object-cover rounded mb-3">
+        <h3 class="text-xl font-semibold">
+            <a href="/pageUrl?page=productdetails" class="product-link">Red Onions</a>
+        </h3>
+        <p class="text-sm text-gray-600">₹30 / kg</p>
+        <p class="text-sm text-gray-500">Weight: 1 kg</p>
+    </div>
+
+    <!-- Product 4 -->
+    <div class="bg-white rounded-xl shadow-md p-4 text-center animate__animated animate__fadeInUp animate__delay-2s product-box">
+        <img src="/images/vegetables/tomato.jpeg" alt="Carrot" class="w-full h-40 object-cover rounded mb-3">
+        <h3 class="text-xl font-semibold">
+            <a href="/pageUrl?page=productdetails" class="product-link">Carrots</a>
+        </h3>
+        <p class="text-sm text-gray-600">₹35 / kg</p>
+        <p class="text-sm text-gray-500">Weight: 1 kg</p>
+    </div>
+
+    <!-- Product 5 -->
+    <div class="bg-white rounded-xl shadow-md p-4 text-center animate__animated animate__fadeInUp animate__delay-3s product-box">
+        <img src="/images/vegetables/tomato.jpeg" alt="Spinach" class="w-full h-40 object-cover rounded mb-3">
+        <h3 class="text-xl font-semibold">
+            <a href="/pageUrl?page=productdetails" class="product-link">Fresh Spinach</a>
+        </h3>
+        <p class="text-sm text-gray-600">₹20 / bunch</p>
+        <p class="text-sm text-gray-500">Weight: 250 g</p>
+    </div>
+
+    <!-- Product 6 -->
+    <div class="bg-white rounded-xl shadow-md p-4 text-center animate__animated animate__fadeInUp animate__delay-4s product-box">
+        <img src="/images/vegetables/tomato.jpeg" alt="Green Chili" class="w-full h-40 object-cover rounded mb-3">
+        <h3 class="text-xl font-semibold">
+            <a href="/pageUrl?page=productdetails" class="product-link">Green Chili</a>
+        </h3>
+        <p class="text-sm text-gray-600">₹60 / kg</p>
+        <p class="text-sm text-gray-500">Weight: 1 kg</p>
+    </div>
+
+</div>
+
+</body>
+</html>
