@@ -1,186 +1,172 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="content">
+
 <head>
     <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Product Details - Farm Vibe</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="'Product Details - ' + ${product.name} + ' | Farm Vibe'">Product Details - Farm Vibe</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Animate.css CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <style>
         .hover-zoom:hover {
-          transform: scale(1.05);
-          transition: transform 0.4s ease-in-out;
+            transform: scale(1.05);
+            transition: transform 0.4s ease-in-out;
         }
     </style>
 </head>
-<body class="bg-gray-100 font-sans">
 
-<!-- Product Detail Section -->
+<body class="bg-gray-100 font-sans" >
+
+<!-- Main Content -->
 <div class="max-w-6xl mx-auto p-6 bg-white rounded-xl shadow-md mt-10 animate__animated animate__fadeInUp mb-10">
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
         <!-- Product Image -->
         <div class="text-center mt-10">
-            <img src="/images/vegetables/tomato2.jpeg" alt="Fresh Tomatoes"
+            <img th:src="@{${product.imageUrl}}" th:alt="${product.name}"
                  class="w-full max-w-sm mx-auto rounded-lg hover-zoom"/>
         </div>
 
         <!-- Product Info -->
         <div class="flex flex-col justify-between">
             <div>
-                <h1 class="text-3xl font-bold text-green-800 mb-2">Fresh Tomatoes</h1>
-                <p class="text-gray-700 mb-4">
-                    These organically grown tomatoes are juicy, sweet, and packed with nutrients.
-                    Hand-picked from our local farms to ensure the best quality.
+                <h1 class="text-3xl font-bold text-green-800 mb-2" th:text="${product.name}">Product Name</h1>
+                <p class="text-gray-700 mb-4" th:text="${product.description}">
+                    Product description goes here.
                 </p>
 
                 <div class="flex flex-wrap items-center gap-4 mb-4">
-                    <span class="text-2xl font-semibold text-red-600">₹40 / kg</span>
-                    <span class="text-sm text-gray-600">Weight: 1 kg</span>
-                    <div class="flex items-center space-x-2">
-                        <span class="text-gray-700 font-medium">5 pcs</span>
+                    <span class="text-2xl font-semibold text-red-600"
+                          th:text="'₹' + ${product.price} + ' / ' + ${product.weight}">₹40 / kg</span>
+                    <span class="text-sm text-gray-600" th:text="'Stock: ' + ${product.stock}">Stock: 10</span>
+                    <div class="flex items-center space-x-2" th:if="${product.stock > 0}">
                         <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-1 rounded-full">✅ In Stock</span>
+                    </div>
+                    <div class="flex items-center space-x-2" th:if="${product.stock <= 0}">
+                        <span class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-1 rounded-full">❌ Out of Stock</span>
                     </div>
                 </div>
 
                 <ul class="list-disc list-inside text-gray-700 text-sm space-y-1 mb-6">
-                    <li>Organically grown without harmful pesticides</li>
-                    <li>Locally sourced and eco-friendly</li>
-                    <li>Rich in vitamins A and C</li>
-                    <li>Perfect for salads, sauces, and cooking</li>
+                    <li th:each="benefit : ${#strings.arraySplit(product.benefits, '\n')}"
+                        th:text="${benefit}">Benefit 1</li>
                 </ul>
             </div>
 
-            <!-- Action Buttons -->
-            <div class="flex gap-4 mt-4">
+            <div class="flex gap-4 mt-4" th:if="${product.stock > 0}">
                 <button onclick="openModal()"
                         class="bg-orange-500 hover:bg-orange-600 text-white text-sm px-6 py-2 rounded-lg shadow">
                     Buy Now
                 </button>
             </div>
+            <div class="text-red-600 font-semibold mt-4" th:if="${product.stock <= 0}">
+                Currently out of stock.
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Modal -->
-<!--<div id="quantityModal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center  z-50">-->
-<!--    <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-6 transform scale-95 transition-all duration-300 animate__animated animate__zoomIn">-->
-<!--        <h2 class="text-2xl font-bold text-green-700 text-center mb-4">Select Quantity</h2>-->
+    <!-- Modal -->
+    <div id="quantityModal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
+        <div
+                class="bg-white rounded-xl shadow-lg w-full max-w-md p-6 transform scale-95 transition-all duration-300 animate__animated animate__zoomIn">
+            <h2 class="text-2xl font-bold text-green-700 text-center mb-4">Select Quantity</h2>
 
-<!--        <div class="flex justify-center items-center gap-4 mb-6">-->
-<!--            <button onclick="changeQuantity(-1)" class="bg-gray-200 px-4 py-2 rounded text-xl font-bold">-</button>-->
+            <div class="text-center text-sm text-gray-700 mb-4">
+                <strong>Order Date:</strong> <span id="orderDate"></span>
+            </div>
 
-<!--            <div class="flex items-center justify-center text-center">-->
-<!--                <input id="quantityInput"-->
-<!--                       type="number"-->
-<!--                       value="1"-->
-<!--                       min="1"-->
-<!--                       max="10"-->
-<!--                       readonly-->
-<!--                       class="w-16 h-12 text-center border border-gray-300 rounded-md text-lg font-semibold"/>-->
-<!--            </div>-->
+            <div class="flex justify-center items-center gap-4 mb-4">
+                <button onclick="changeQuantity(-1)" class="bg-gray-200 px-4 py-2 rounded text-xl font-bold">-</button>
+                <input id="quantityInput" type="number" value="1" min="1" max="" readonly
+                       class="w-16 h-12 text-center border border-gray-300 rounded-md text-lg font-semibold"/>
+                <button onclick="changeQuantity(1)" class="bg-gray-200 px-4 py-2 rounded text-xl font-bold">+</button>
+            </div>
 
-<!--            <button onclick="changeQuantity(1)" class="bg-gray-200 px-4 py-2 rounded text-xl font-bold">+</button>-->
-<!--        </div>-->
+            <p class="text-center text-sm text-gray-500 mb-4" id="availableStockText">Available Stock: </p>
 
+            <div class="mb-4">
+                <label for="deliveryDate" class="block text-sm font-medium text-gray-700 mb-1">Select Delivery Date</label>
+                <input type="date" id="deliveryDate" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"/>
+            </div>
 
-<!--        <p class="text-center text-sm text-gray-500 mb-4">Available Stock: 10</p>-->
-
-<!--        <div class="flex justify-center gap-4">-->
-<!--            <button onclick="redirectToAddress()"-->
-<!--                    class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-md">-->
-<!--                Continue-->
-<!--            </button>-->
-<!--            <button onclick="closeModal()" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md">-->
-<!--                Cancel-->
-<!--            </button>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
-
-
-<!-- Modal -->
-<div id="quantityModal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
-    <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-6 transform scale-95 transition-all duration-300 animate__animated animate__zoomIn">
-        <h2 class="text-2xl font-bold text-green-700 text-center mb-4">Select Quantity</h2>
-
-        <!-- Order Date (Read-Only) -->
-        <div class="text-center text-sm text-gray-700 mb-4">
-            <strong>Order Date:</strong> <span id="orderDate"></span>
-        </div>
-
-        <!-- Quantity Selector -->
-        <div class="flex justify-center items-center gap-4 mb-4">
-            <button onclick="changeQuantity(-1)" class="bg-gray-200 px-4 py-2 rounded text-xl font-bold">-</button>
-            <input id="quantityInput" type="number" value="1" min="1" max="10" readonly
-                   class="w-16 h-12 text-center border border-gray-300 rounded-md text-lg font-semibold"/>
-            <button onclick="changeQuantity(1)" class="bg-gray-200 px-4 py-2 rounded text-xl font-bold">+</button>
-        </div>
-
-        <p class="text-center text-sm text-gray-500 mb-4">Available Stock: 10</p>
-
-        <!-- Delivery Date -->
-        <div class="mb-4">
-            <label for="deliveryDate" class="block text-sm font-medium text-gray-700 mb-1">Select Delivery Date</label>
-            <input type="date" id="deliveryDate" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"/>
-        </div>
-
-        <!-- Buttons -->
-        <div class="flex justify-center gap-4 mt-4">
-            <button onclick="redirectToAddress()"
-                    class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-md">
-                Continue
-            </button>
-            <button onclick="closeModal()" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md">
-                Cancel
-            </button>
+            <div class="flex justify-center gap-4 mt-4">
+                <button onclick="redirectToAddress()"
+                        class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-md">
+                    Continue
+                </button>
+                <button onclick="closeModal()" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md">
+                    Cancel
+                </button>
+            </div>
         </div>
     </div>
+
 </div>
 
-<!-- JavaScript -->
 <script>
+    // Make sure the elements exist when script runs
     const modal = document.getElementById('quantityModal');
     const quantityInput = document.getElementById('quantityInput');
-    const maxStock = 10;
+    const availableStockText = document.getElementById('availableStockText');
+    const deliveryDateInput = document.getElementById('deliveryDate');
+
+    // Thymeleaf inject stock dynamically with inline JavaScript
+    const maxStock = /*[[${product.stock}]]*/ 10;
+
+    // Set max attribute and display available stock
+    quantityInput.max = maxStock;
+    availableStockText.textContent = "Available Stock: " + maxStock;
 
     function openModal() {
-      const today = new Date().toISOString().split('T')[0];
-      document.getElementById('orderDate').textContent = today;
-      document.getElementById('deliveryDate').setAttribute('min', today); // prevent selecting past dates
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('orderDate').textContent = today;
+        deliveryDateInput.setAttribute('min', today); // prevent past dates
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
     }
 
     function closeModal() {
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
     }
 
     function changeQuantity(delta) {
-      let quantity = parseInt(quantityInput.value);
-      quantity += delta;
-      if (quantity >= 1 && quantity <= maxStock) {
-        quantityInput.value = quantity;
-      }
+        let quantity = parseInt(quantityInput.value);
+        quantity += delta;
+        if (quantity >= 1 && quantity <= maxStock) {
+            quantityInput.value = quantity;
+        }
     }
 
     function redirectToAddress() {
-      const selectedQty = quantityInput.value;
-      const deliveryDate = document.getElementById('deliveryDate').value;
-      const orderDate = document.getElementById('orderDate').textContent;
+        const selectedQty = quantityInput.value;
+        const deliveryDate = deliveryDateInput.value;
+        const orderDate = document.getElementById('orderDate').textContent;
 
-      if (!deliveryDate) {
-        alert("Please select a delivery date.");
-        return;
-      }
+        if (!deliveryDate) {
+            alert("Please select a delivery date.");
+            return;
+        }
 
-      // Example: pass data via query parameters
-      window.location.href = `/pageUrl?page=addressdetails&qty=${selectedQty}&orderDate=${orderDate}&deliveryDate=${deliveryDate}`;
+        const productId = /*[[${product.id}]]*/ 0;
+
+        const params = new URLSearchParams({
+            page: 'addressdetails',
+            qty: selectedQty,
+            orderDate: orderDate,
+            deliveryDate: deliveryDate,
+            productId: productId
+        });
+
+        window.location.href = `/pageUrl?${params.toString()}`;
     }
 </script>
 
 </body>
+
 </html>

@@ -1,102 +1,59 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="content">
 <head>
-    <meta charset="UTF-8">
-    <title>Farm Vibe - Products</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>All Products - Farm Vibe</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
     <style>
-        .product-box {
-            transition: transform 0.4s ease;
-        }
-
-        .product-box:hover {
+        .hover-zoom:hover {
             transform: scale(1.05);
-        }
-
-        a.product-link {
-            color: #15803d; /* Tailwind's green-700 */
-            text-decoration: none;
-        }
-
-        a.product-link:hover {
-            text-decoration: underline;
+            transition: transform 0.4s ease-in-out;
         }
     </style>
 </head>
+<body class="bg-gray-100 font-sans">
 
-<body>
+<!-- Add fragment wrapper for Thymeleaf dynamic insertion -->
+<div th:fragment="content">
 
-<!-- Section Heading -->
-<section class="text-center mb-12 animate__animated animate__fadeInDown mt-5">
-    <h2 class="text-4xl font-bold text-green-800 mb-2">Our Products</h2>
-    <p class="text-gray-600 text-base max-w-2xl mx-auto">
-        We offer a variety of organic farm products with premium quality.
-    </p>
-</section>
+    <!-- Section Heading -->
+    <section class="text-center mb-12 animate__animated animate__fadeInDown mt-5">
+        <h2 class="text-4xl font-bold text-green-800 mb-2">Our Products</h2>
+        <p class="text-gray-600 text-base max-w-2xl mx-auto">
+            We offer a variety of organic farm products with premium quality.
+        </p>
+    </section>
 
-<!-- Products Grid -->
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 max-w-7xl mx-auto mb-7">
+    <!-- Products Grid -->
+    <div class="max-w-7xl mb-10 mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 animate__animated animate__fadeInUp">
+        <div th:each="product : ${products}"
+             class="bg-white rounded-xl shadow-md p-4 flex flex-col hover:shadow-lg transition-shadow duration-300">
 
-    <!-- Product 1 -->
-    <div class="bg-white rounded-xl shadow-md p-4 text-center animate__animated animate__fadeInUp animate__delay-1s product-box">
-        <img src="/images/vegetables/tomato.jpeg" alt="Tomato" class="w-full h-40 object-cover rounded mb-3">
-        <h3 class="text-xl font-semibold">
-            <a href="/pageUrl?page=productdetails" class="product-link">Fresh Tomatoes</a>
-        </h3>
-        <p class="text-sm text-gray-600">₹40 / kg</p>
-        <p class="text-sm text-gray-500">Weight: 1 kg</p>
-    </div>
+            <!-- Fixed link format -->
+            <a th:href="@{'/pageUrl'(page='productdetails', id=${product.id})}" class="block overflow-hidden rounded-lg hover-zoom">
+                <img th:src="@{${product.imageUrl}}" th:alt="${product.name}" class="w-full h-48 object-cover"/>
+            </a>
 
-    <!-- Product 2 -->
-    <div class="bg-white rounded-xl shadow-md p-4 text-center animate__animated animate__fadeInUp animate__delay-1s product-box">
-        <img src="/images/vegetables/tomato.jpeg" alt="Potato" class="w-full h-40 object-cover rounded mb-3">
-        <h3 class="text-xl font-semibold">
-            <a href="/pageUrl?page=productdetails" class="product-link">Organic Potatoes</a>
-        </h3>
-        <p class="text-sm text-gray-600">₹25 / kg</p>
-        <p class="text-sm text-gray-500">Weight: 1 kg</p>
-    </div>
-
-    <!-- Product 3 -->
-    <div class="bg-white rounded-xl shadow-md p-4 text-center animate__animated animate__fadeInUp animate__delay-2s product-box">
-        <img src="/images/vegetables/tomato.jpeg" alt="Onion" class="w-full h-40 object-cover rounded mb-3">
-        <h3 class="text-xl font-semibold">
-            <a href="/pageUrl?page=productdetails" class="product-link">Red Onions</a>
-        </h3>
-        <p class="text-sm text-gray-600">₹30 / kg</p>
-        <p class="text-sm text-gray-500">Weight: 1 kg</p>
-    </div>
-
-    <!-- Product 4 -->
-    <div class="bg-white rounded-xl shadow-md p-4 text-center animate__animated animate__fadeInUp animate__delay-2s product-box">
-        <img src="/images/vegetables/tomato.jpeg" alt="Carrot" class="w-full h-40 object-cover rounded mb-3">
-        <h3 class="text-xl font-semibold">
-            <a href="/pageUrl?page=productdetails" class="product-link">Carrots</a>
-        </h3>
-        <p class="text-sm text-gray-600">₹35 / kg</p>
-        <p class="text-sm text-gray-500">Weight: 1 kg</p>
-    </div>
-
-    <!-- Product 5 -->
-    <div class="bg-white rounded-xl shadow-md p-4 text-center animate__animated animate__fadeInUp animate__delay-3s product-box">
-        <img src="/images/vegetables/tomato.jpeg" alt="Spinach" class="w-full h-40 object-cover rounded mb-3">
-        <h3 class="text-xl font-semibold">
-            <a href="/pageUrl?page=productdetails" class="product-link">Fresh Spinach</a>
-        </h3>
-        <p class="text-sm text-gray-600">₹20 / bunch</p>
-        <p class="text-sm text-gray-500">Weight: 250 g</p>
-    </div>
-
-    <!-- Product 6 -->
-    <div class="bg-white rounded-xl shadow-md p-4 text-center animate__animated animate__fadeInUp animate__delay-4s product-box">
-        <img src="/images/vegetables/tomato.jpeg" alt="Green Chili" class="w-full h-40 object-cover rounded mb-3">
-        <h3 class="text-xl font-semibold">
-            <a href="/pageUrl?page=productdetails" class="product-link">Green Chili</a>
-        </h3>
-        <p class="text-sm text-gray-600">₹60 / kg</p>
-        <p class="text-sm text-gray-500">Weight: 1 kg</p>
+            <div class="mt-4 flex flex-col flex-grow">
+                <a th:href="@{'/pageUrl'(page='productdetails', id=${product.id})}" class="text-lg font-semibold text-green-800 hover:underline" th:text="${product.name}">Product Name</a>
+                <p class="text-gray-700 text-sm mt-1 line-clamp-2" th:text="${product.description}">Product Description</p>
+                <div class="mt-auto flex items-center justify-between mt-4">
+                    <span class="text-xl font-bold text-red-600" th:text="'₹' + ${product.price} + ' / ' + ${product.weight}">₹40 / kg</span>
+                    <span class="text-sm text-gray-600" th:text="${product.stock > 0 ? 'In Stock' : 'Out of Stock'}">In Stock</span>
+                </div>
+            </div>
+        </div>
     </div>
 
 </div>
 
 </body>
 </html>
+

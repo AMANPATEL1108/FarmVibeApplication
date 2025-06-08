@@ -1,4 +1,4 @@
-<!-- templates/base.html -->
+<!-- templates/usermaster.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
@@ -35,12 +35,12 @@
 <header th:replace="layout/header :: header"></header>
 
 <!-- Dynamic Content -->
-<main th:replace="${contentPage}"></main>
+<main>
+    <div th:replace="${contentPage}"></div>
+</main>
 
 <!-- Footer Fragment -->
-<!--<footer th:replace="layout/footer :: footer"></footer>-->
-<div th:replace="~{layout/footer :: footer}"></div>
-
+<footer th:replace="layout/footer :: footer"></footer>
 
 <!-- Optional: Bootstrap JS Bundle (Popper + Bootstrap JS) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
