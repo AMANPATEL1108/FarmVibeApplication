@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/admin")
 public class AdminPageController {
 
+    
+    
 
     @GetMapping
     public String home(Model model) {
