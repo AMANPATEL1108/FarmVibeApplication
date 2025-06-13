@@ -52,10 +52,12 @@
                     </div>
                 </div>
 
-                <ul class="list-disc list-inside text-gray-700 text-sm space-y-1 mb-6">
-                    <li th:each="benefit : ${#strings.arraySplit(product.benefits, '\n')}"
-                        th:text="${benefit}">Benefit 1</li>
+                <ul class="list-disc list-inside text-gray-700 text-base mb-6 leading-relaxed">
+                    <li th:each="benefit : ${product.benefitList}" th:text="${benefit}">Benefit</li>
                 </ul>
+
+
+
             </div>
 
             <div class="flex gap-4 mt-4" th:if="${product.stock > 0}">

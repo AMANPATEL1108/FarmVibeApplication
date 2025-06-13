@@ -15,6 +15,7 @@ public class ProductController {
     @GetMapping("/products")
     public String showProducts(Model model) {
         model.addAttribute("products", productRepository.findAll());
+        System.out.println("All Product Details is :"+productRepository.findAll());
         return "userPages/products";  // products fragment without master page, or redirect to pageUrl version
     }
 }

@@ -1,7 +1,11 @@
 package com.FarmVibeApplication.api.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "product_details")
@@ -30,7 +34,30 @@ public class ProductDetails {
 
     private int stock;
 
+    // Store benefits as JSON string in DB
+    @Column(columnDefinition = "TEXT")
     private String benefits;
+
+    // === Transient field to work with benefits as a List in Java ===
+    @Transient
+    public List<String> getBenefitList() {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(this.benefits, List.class);
+        } catch (JsonProcessingException e) {
+            return List.of(); // return empty list if error
+        }
+    }
+
+    @Transient
+    public void setBenefitList(List<String> benefitList) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            this.benefits = objectMapper.writeValueAsString(benefitList);
+        } catch (JsonProcessingException e) {
+            this.benefits = "[]"; // fallback
+        }
+    }
 
     // Many products belong to one category
     @ManyToOne(fetch = FetchType.LAZY)
