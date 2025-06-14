@@ -3,6 +3,8 @@ package com.FarmVibeApplication.api.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
 @Data
 @Table(name = "user_details")
@@ -11,7 +13,8 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
-    private Long user_Id;
+    private Long userId;
+
 
     @Column(name = "user_firstname")
     private String user_firstName;
@@ -25,7 +28,6 @@ public class User {
     @Column(name = "mobile_Number")
     private Long mobileNumber;
 
-
     @Column(name = "user_password")
     private String user_password;
 
@@ -35,11 +37,16 @@ public class User {
     @Column(name = "role")
     private String role;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Address> addresses;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Order> orders;
+
     @PrePersist
     protected void onCreate() {
         if (this.role == null) {
             this.role = "USER";
         }
     }
-
 }

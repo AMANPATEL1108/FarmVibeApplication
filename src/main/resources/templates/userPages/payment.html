@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" th:fragment="content" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <title>Payment Page - Farm Vibe</title>
@@ -9,76 +9,90 @@
 <div class="bg-green-50 min-h-screen flex items-center justify-center">
     <div class="w-full max-w-xl px-6">
 
-        <!-- Page Title and Subtitle -->
+        <!-- Title -->
         <div class="text-center mb-8">
             <h1 class="text-4xl font-bold text-green-800 mb-2 select-none">Safe Payment</h1>
-            <p class="text-gray-600 text-lg select-none">Choose your preferred payment method below to complete your order.</p>
+            <p class="text-gray-600 text-lg select-none">Choose your preferred payment method to continue.</p>
         </div>
 
-        <!-- Buttons for payment selection -->
+        <!-- Toggle Buttons -->
         <div class="flex gap-6 mb-10 justify-center">
             <button onclick="showDetails('online')"
-                    class="w-40 h-12 bg-green-600 text-white font-semibold rounded-md shadow-md transition-colors duration-300 focus:outline-none"
+                    class="w-40 h-12 bg-green-600 text-white font-semibold rounded-md shadow-md hover:bg-green-700"
                     type="button">
                 Online Payment
             </button>
             <button onclick="showDetails('offline')"
-                    class="w-40 h-12 bg-yellow-500 text-white font-semibold rounded-md shadow-md transition-colors duration-300 focus:outline-none"
+                    class="w-40 h-12 bg-yellow-500 text-white font-semibold rounded-md shadow-md hover:bg-yellow-600"
                     type="button">
                 Cash on Delivery
             </button>
         </div>
 
-        <!-- Online Payment Details -->
-        <div id="onlineDetails" class="bg-white rounded-lg shadow-lg p-8 mb-6" style="display:block;">
+        <!-- Online Payment -->
+        <div id="onlineDetails" class="bg-white rounded-lg shadow-lg p-8 mb-6" style="display: block;">
             <h2 class="text-2xl font-semibold mb-6 text-green-700 select-none">Online Payment Details</h2>
             <ul class="mb-6 text-gray-700 space-y-3 select-none">
-                <li><strong>Product:</strong> Fresh Tomatoes</li>
-                <li><strong>Quantity:</strong> 3 kg</li>
-                <li><strong>Price per kg:</strong> ₹40</li>
-                <li><strong>Order Date:</strong> <span class="text-black font-semibold">2025-05-23</span></li>
-                <li><strong>Delivery Date:</strong> <span class="text-black font-semibold">2025-05-25</span></li>
+                <li><strong>Product:</strong> <span th:text="${product.name}">Product Name</span></li>
+                <li><strong>Quantity:</strong> <span th:text="${qty}">1</span></li>
+                <li><strong>Price per kg:</strong> ₹<span th:text="${product.price}">0</span></li>
+                <li><strong>Order Date:</strong> <span th:text="${orderDate}">2025-06-14</span></li>
+                <li><strong>Delivery Date:</strong> <span th:text="${deliveryDate}">2025-06-16</span></li>
+                <li><strong>Address:</strong>
+                    <span th:text="${address.first_name + ' ' + address.last_name + ', ' + address.house_number + ', ' + address.street + ' - ' + address.pincode}">
+                        User, Address - 000000
+                    </span>
+                </li>
             </ul>
-            <p class="font-bold text-xl text-green-800 mb-8 select-none">Total Price: ₹120</p>
-            <a href="/pageUrl?page=razorpayadding"
-               class="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-3 rounded-md transition duration-300"
-               type="button">
+            <p class="font-bold text-xl text-green-800 mb-8 select-none">
+                Total Price: ₹<span th:text="${product.price * qty}">0</span>
+            </p>
+            <a th:href="@{/pageUrl(page='razorpayadding')}"
+               class="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-3 rounded-md transition duration-300">
                 Proceed To Pay
             </a>
         </div>
 
-        <!-- Cash on Delivery Details -->
-        <div id="offlineDetails" class="bg-white rounded-lg shadow-lg p-8 mb-6" style="display:none;">
+        <!-- Cash on Delivery -->
+        <div id="offlineDetails" class="bg-white rounded-lg shadow-lg p-8 mb-6" style="display: none;">
             <h2 class="text-2xl font-semibold mb-6 text-yellow-700 select-none">Cash on Delivery Details</h2>
             <ul class="mb-6 text-gray-700 space-y-3 select-none">
-                <li><strong>Product:</strong> Fresh Tomatoes</li>
-                <li><strong>Quantity:</strong> 3 kg</li>
-                <li><strong>Price per kg:</strong> ₹40</li>
-                <li><strong>Order Date:</strong> <span class="text-black font-semibold">2025-05-23</span></li>
-                <li><strong>Delivery Date:</strong> <span class="text-black font-semibold">2025-05-25</span></li>
+                <li><strong>Product:</strong> <span th:text="${product.name}">Product Name</span></li>
+                <li><strong>Quantity:</strong> <span th:text="${qty}">1</span></li>
+                <li><strong>Price per kg:</strong> ₹<span th:text="${product.price}">0</span></li>
+                <li><strong>Order Date:</strong> <span th:text="${orderDate}">2025-06-14</span></li>
+                <li><strong>Delivery Date:</strong> <span th:text="${deliveryDate}">2025-06-16</span></li>
+                <li><strong>Address:</strong>
+                    <span th:text="${address.first_name + ' ' + address.last_name + ', ' + address.house_number + ', ' + address.street + ' - ' + address.pincode}">
+                        User, Address - 000000
+                    </span>
+                </li>
             </ul>
-            <p class="font-bold text-xl text-yellow-800 mb-8 select-none">Total Price: ₹120</p>
-            <a href="/pageUrl?page=confirmationpage"
-               class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-8 py-3 rounded-md transition duration-300"
-               type="button">
-                Continue
-            </a>
+            <p class="font-bold text-xl text-yellow-800 mb-8 select-none">
+                Total Price: ₹<span th:text="${product.price * qty}">0</span>
+            </p>
+            <form th:action="@{/order/confirm(productId=${product.id}, qty=${qty}, orderDate=${orderDate}, deliveryDate=${deliveryDate}, addressId=${address.id}, userId=${userId})}"
+                  method="post">
+                <button type="submit"
+                        class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-8 py-3 rounded-md transition duration-300">
+                    Continue ₹<span th:text="${product.price * qty}">0</span> (COD)
+                </button>
+            </form>
         </div>
 
     </div>
 </div>
 
-<!-- Script Section -->
+<!-- JavaScript to toggle -->
 <script>
     function showDetails(type) {
-      document.getElementById('onlineDetails').style.display = (type === 'online') ? 'block' : 'none';
-      document.getElementById('offlineDetails').style.display = (type === 'offline') ? 'block' : 'none';
+        document.getElementById('onlineDetails').style.display = type === 'online' ? 'block' : 'none';
+        document.getElementById('offlineDetails').style.display = type === 'offline' ? 'block' : 'none';
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      showDetails('online'); // Default view
+        showDetails('online'); // Default on load
     });
 </script>
-
 </body>
 </html>
