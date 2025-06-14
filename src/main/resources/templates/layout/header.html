@@ -12,27 +12,17 @@
 
             <!-- Navigation -->
             <nav class="flex gap-4 mb-2 md:mb-0">
-                <a href="/" class="hover:text-blue-300 transition px-2 py-1 no-underline">
-                    Home
-                </a>
-                <a href="/pageUrl?page=contact" class="hover:text-blue-300 transition px-2 py-1 no-underline">
-                    Contact
-                </a>
-                <a href="/pageUrl?page=products" class="hover:text-blue-300 transition px-2 py-1 no-underline">
-                    Products
-                </a>
-                <a href="/pageUrl?page=category" class="hover:text-blue-300 transition px-2 py-1 no-underline">
-                    Category
-                </a>
-                <a href="/pageUrl?page=about" class="hover:text-blue-300 transition px-2 py-1 no-underline">
-                    About
-                </a>
+                <a href="/" class="hover:text-blue-300 transition px-2 py-1 no-underline">Home</a>
+                <a href="/pageUrl?page=contact" class="hover:text-blue-300 transition px-2 py-1 no-underline">Contact</a>
+                <a href="/pageUrl?page=products" class="hover:text-blue-300 transition px-2 py-1 no-underline">Products</a>
+                <a href="/pageUrl?page=category" class="hover:text-blue-300 transition px-2 py-1 no-underline">Category</a>
+                <a href="/pageUrl?page=about" class="hover:text-blue-300 transition px-2 py-1 no-underline">About</a>
             </nav>
 
-            <!-- Social + Auth + Profile -->
+            <!-- Auth & Profile -->
             <div class="flex items-center gap-4 relative" id="authSection">
 
-                <!-- Sign In & Register Buttons -->
+                <!-- Sign In & Register -->
                 <a href="/pageUrl?page=signing"
                    class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-4 py-1.5 rounded shadow transition duration-200 auth-btn">
                     Sign In
@@ -42,7 +32,7 @@
                     Register
                 </a>
 
-                <!-- Profile Icon + Dropdown -->
+                <!-- Profile Icon -->
                 <div class="relative hidden" id="profileMenu">
                     <button id="profileToggle" class="focus:outline-none flex flex-col items-center" aria-haspopup="true" aria-expanded="false" aria-controls="profileDropdown" aria-label="User menu">
                         <img src="/images/logo/user.png" alt="Profile" class="w-9 h-9 rounded-full border-2 border-white"/>
@@ -50,7 +40,7 @@
                     </button>
                     <div id="profileDropdown"
                          class="absolute right-0 mt-2 bg-white text-black rounded shadow-md hidden z-50 min-w-[160px]">
-                        <a href="/pageUrl?page=profile" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
+                        <a href="#" onclick="goToProfile()" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
                         <a href="/pageUrl?page=order-detail" class="block px-4 py-2 hover:bg-gray-100">Orders</a>
                         <a href="/" onclick="logout()" class="block px-4 py-2 hover:bg-gray-100">Log Out</a>
                     </div>
@@ -59,7 +49,7 @@
         </div>
     </div>
 
-    <!-- Dropdown & Auth Toggle Script -->
+    <!-- Scripts -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const toggle = document.getElementById("profileToggle");
@@ -89,21 +79,29 @@
 
             if (isTokenValid) {
                 profileMenu.classList.remove("hidden");
-                // Hide Sign In and Register buttons
                 authButtons.forEach(btn => btn.classList.add('hidden'));
             } else {
-                // Token invalid/expired
                 localStorage.removeItem("jwtToken");
                 localStorage.removeItem("jwtIssuedAt");
-                // Show Sign In and Register buttons
+                localStorage.removeItem("userId");
                 authButtons.forEach(btn => btn.classList.remove('hidden'));
                 profileMenu.classList.add("hidden");
             }
         });
 
+        function goToProfile() {
+            const userId = localStorage.getItem("userId");
+            if (!userId) {
+                alert("User not logged in.");
+                return;
+            }
+            window.location.href = `/user/profile?userId=${userId}`;
+        }
+
         function logout() {
             localStorage.removeItem("jwtToken");
             localStorage.removeItem("jwtIssuedAt");
+            localStorage.removeItem("userId");
             window.location.href = "/";
         }
     </script>

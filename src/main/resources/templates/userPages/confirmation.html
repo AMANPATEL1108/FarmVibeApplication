@@ -29,7 +29,7 @@
             <p><strong>Email:</strong> <span th:text="${address.email}">amanpatel@gmail.com</span></p>
             <p><strong>Mobile:</strong> <span th:text="${address.number}">9876543210</span></p>
             <p><strong>Address:</strong>
-                <span th:text="${address.house_number + ', ' + address.street + ', ' + address.pincode}">123, MG Road, Bengaluru, 560001</span>
+                <span th:text="${address.first_name + ' ' + address.last_name + ', ' + address.house_number + ', ' + address.street + ' - ' + address.area +' - ' + address.pincode}">
             </p>
         </div>
 

@@ -15,7 +15,6 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Fields with snake_case but valid getter/setter support
     @Column(name = "first_name")
     private String first_name;
 
@@ -28,6 +27,10 @@ public class Address {
 
     private String street;
 
+    private String city;       // ✅ Added new field
+
+    private String area;       // ✅ Added new field
+
     @Column(name = "house_number")
     private String house_number;
 
@@ -38,7 +41,7 @@ public class Address {
     @JoinColumn(name = "user_id")
     private User user;
 
-    // ✅ Explicit getters for Thymeleaf compatibility with snake_case
+    // ✅ Explicit getters and setters for Thymeleaf compatibility (optional if Lombok works properly)
 
     public String getFirst_name() {
         return first_name;
@@ -62,5 +65,29 @@ public class Address {
 
     public void setHouse_number(String house_number) {
         this.house_number = house_number;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
     }
 }

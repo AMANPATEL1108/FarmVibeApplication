@@ -27,7 +27,7 @@ public class ProductDetails {
 
     private double price;
     private String weight;
-    private int quantity;
+//    private int quantity;
     private int stock;
 
     @Column(columnDefinition = "TEXT")

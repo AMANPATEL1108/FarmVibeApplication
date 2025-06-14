@@ -79,6 +79,7 @@ public class UserController {
     }
 
     // ✅ Login only through mobile number
+    // ✅ Login only through mobile number
     @PostMapping("/user-login")
     @ResponseBody
     public ResponseEntity<?> login(@RequestParam("mobile") String mobileStr,
@@ -106,8 +107,15 @@ public class UserController {
         }
 
         String token = jwtService.generateToken(user);
-        return ResponseEntity.ok(Map.of("token", token, "username", user.getUser_firstName()));
+
+        // ✅ Include userId in response
+        return ResponseEntity.ok(Map.of(
+                "token", token,
+                "userId", user.getUserId(),
+                "username", user.getUser_firstName()
+        ));
     }
+
 
 
 

@@ -30,7 +30,6 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    // ✅ 1. Show address form and list
     @GetMapping("/address")
     public String showAddress(@RequestParam Long productId,
                               @RequestParam int qty,
@@ -55,10 +54,11 @@ public class OrderController {
         return "usermaster";
     }
 
-    // ✅ 2. Handle form (new or selected) address
     @PostMapping("/address")
     public String handleAddress(@ModelAttribute("newAddress") Address newAddr,
                                 @RequestParam(required = false) Long selectedAddressId,
+                                @RequestParam(required = false) String city,
+                                @RequestParam(required = false) String area,
                                 @RequestParam Long productId,
                                 @RequestParam int qty,
                                 @RequestParam String orderDate,
@@ -76,9 +76,10 @@ public class OrderController {
                     "&userId=" + userId;
         } else {
             newAddr.setUser(user);
+            newAddr.setCity(city);
+            newAddr.setArea(area);
             addrRepo.save(newAddr);
 
-            // reload address page to show saved
             return "redirect:/order/address?productId=" + productId +
                     "&qty=" + qty +
                     "&orderDate=" + orderDate +
@@ -87,7 +88,7 @@ public class OrderController {
         }
     }
 
-    // ✅ 3. Show payment
+
     @GetMapping("/payment")
     public String showPayment(@RequestParam Long productId,
                               @RequestParam int qty,
@@ -108,7 +109,6 @@ public class OrderController {
         return "usermaster";
     }
 
-    // ✅ 4. Show confirmation
     @PostMapping("/confirm")
     public String showConfirm(@RequestParam Long productId,
                               @RequestParam int qty,
@@ -137,7 +137,6 @@ public class OrderController {
         return "usermaster";
     }
 
-    // ✅ 5. Save order
     @PostMapping("/place")
     public String placeOrder(@RequestParam Long productId,
                              @RequestParam int qty,
@@ -150,11 +149,24 @@ public class OrderController {
         ProductDetails pd = prodRepo.findById(productId).orElse(null);
         Address addr = addrRepo.findById(addressId).orElse(null);
         User user = userRepo.findById(userId).orElse(null);
-        Category cat = pd.getCategory();
+
+        if (pd == null || addr == null || user == null) {
+            return "redirect:/error";
+        }
+
+        int currentStock = pd.getStock();
+
+        if (qty > currentStock) {
+            model.addAttribute("error", "Requested quantity exceeds available stock.");
+            return "redirect:/products";
+        }
+
+        pd.setStock(currentStock - qty);
+        prodRepo.save(pd);
 
         Order o = Order.builder()
                 .product(pd)
-                .category(cat)
+                .category(pd.getCategory())
                 .address(addr)
                 .user(user)
                 .quantity(qty)
@@ -169,7 +181,6 @@ public class OrderController {
 
         orderService.save(o);
 
-        return "redirect:/"; // Redirects to home page
+        return "redirect:/";
     }
-
 }

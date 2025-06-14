@@ -64,11 +64,6 @@
             return false;
         }
 
-        if (!password) {
-            alert('Please enter your password.');
-            return false;
-        }
-
         try {
             const formData = new URLSearchParams();
             formData.append('mobile', mobile);
@@ -80,15 +75,21 @@
                 body: formData.toString()
             });
 
+            const result = await response.json();
+
             if (!response.ok) {
-                const errorData = await response.json();
-                alert(errorData.error || 'Login failed.');
+                alert(result.error || 'Login failed.');
                 return false;
             }
 
-            const result = await response.json();
+            // ✅ Store credentials in localStorage
             localStorage.setItem('jwtToken', result.token);
             localStorage.setItem('jwtIssuedAt', new Date().getTime());
+
+            if (result.userId) {
+                localStorage.setItem('userId', result.userId);
+            }
+
             alert('Login successful!');
             window.location.href = '/pageUrl?page=home';
 
@@ -96,9 +97,11 @@
             console.error('Login error:', error);
             alert('Something went wrong during login.');
         }
+
+        return false;
     }
 
-    // Toggle password show/hide
+    // Toggle password visibility
     document.getElementById('togglePassword').addEventListener('click', () => {
         const passwordInput = document.getElementById('password');
         const eyeIcon = document.getElementById('eyeIcon');
@@ -106,18 +109,18 @@
         if (passwordInput.type === 'password') {
             passwordInput.type = 'text';
             eyeIcon.innerHTML = `
-              <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.223-3.545m3.183-2.82A3 3 0 1115 12m-3 0a3 3 0 013-3m6.364 6.364L21 21" />
-              <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M3 3l18 18" />
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.223-3.545m3.183-2.82A3 3 0 1115 12m-3 0a3 3 0 013-3m6.364 6.364L21 21" />
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M3 3l18 18" />
             `;
         } else {
             passwordInput.type = 'password';
             eyeIcon.innerHTML = `
-              <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
             `;
         }
     });
