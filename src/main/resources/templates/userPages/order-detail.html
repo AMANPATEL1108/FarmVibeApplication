@@ -1,149 +1,86 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" th:fragment="content">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Details | Farm Vibe</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
-
-    <style>
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
-        .animate-bounce-slow {
-            animation: bounce 1.5s infinite;
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in-up {
-            animation: fadeInUp 0.5s ease-out;
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100 min-h-screen font-sans">
 
-<!-- Order Status Banner -->
-<div class="flex justify-center items-center mt-10 mb-6">
-    <div class="bg-green-100 text-green-800 px-6 py-4 rounded-lg shadow animate-bounce-slow">
-        <p class="text-xl font-semibold">🚚 Your orders are on the way!</p>
-    </div>
+<!-- Order Banner -->
+<div class="text-center mt-10">
+    <h1 class="text-3xl font-bold text-green-700">🧾 Non-Delivered Orders</h1>
+    <p class="text-gray-600">Only non-delivered orders are shown, grouped by date</p>
 </div>
 
-<!-- Header with Title + Old Order History Button -->
-<div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg animate-fade-in-up flex justify-between items-center mb-10">
-    <h2 class="text-2xl font-bold text-gray-800">Order Details</h2>
-    <a href="pageUrl?page=order-history-old"
-       class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-        Old Order History
-    </a>
-</div>
+<!-- Orders Grouped by Date -->
+<div class="max-w-6xl mx-auto space-y-10 p-4">
+    <div th:if="${groupedOrders != null and !groupedOrders.isEmpty()}" th:each="entry : ${groupedOrders}" class="space-y-6">
 
-<!-- All Order Cards -->
-<div class="max-w-5xl mx-auto space-y-10 px-4 mb-12">
-
-    <!-- Product 1 -->
-    <div class="bg-white p-6 rounded-lg shadow-lg animate-fade-in-up">
-        <h3 class="text-2xl font-bold text-gray-800 mb-4">🛒 Fresh Mango</h3>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-            <div class="bg-gray-50 p-3 rounded-md border">
-                <p class="text-sm text-gray-600">Order Date:</p>
-                <p class="text-base font-medium text-gray-800">May 24, 2025</p>
-            </div>
-            <div class="bg-gray-50 p-3 rounded-md border">
-                <p class="text-sm text-gray-600">Estimated Delivery:</p>
-                <p class="text-base font-medium text-gray-800">May 28, 2025</p>
-            </div>
-            <div class="bg-gray-50 p-3 rounded-md border">
-                <p class="text-sm text-gray-600">Payment Type:</p>
-                <p class="text-base font-medium text-gray-800">Online</p>
-            </div>
-            <div class="bg-gray-50 p-3 rounded-md border">
-                <p class="text-sm text-gray-600">Payment Status:</p>
-                <span class="inline-block mt-1 px-3 py-1 text-sm font-semibold text-green-800 bg-green-100 rounded-full">
-                    Payment Confirmed
-                </span>
-            </div>
+        <!-- Date Header with Invoice Download -->
+        <div class="bg-gray-200 p-3 rounded font-semibold text-lg text-gray-800 flex justify-between items-center">
+            <span>Date: <span th:text="${entry.key}">Order Date</span></span>
+            <form th:action="@{/orders/invoice}" method="get">
+                <input type="hidden" name="date" th:value="${entry.key}"/>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-1.5 rounded hover:bg-blue-700 text-sm">
+                    Download Invoice
+                </button>
+            </form>
         </div>
 
-        <div class="space-y-1 text-gray-700">
-            <p><strong>Category:</strong> Fruits</p>
-            <p><strong>Quantity:</strong> 2 kg</p>
-            <p><strong>Price/kg:</strong> ₹100</p>
-            <p><strong>Total:</strong> <span class="text-green-700 font-bold">₹200</span></p>
-        </div>
-    </div>
+        <!-- Order Table -->
+        <table class="min-w-full text-sm text-left bg-white shadow-md rounded">
+            <thead class="bg-gray-100">
+            <tr>
+                <th class="px-4 py-2">Order ID</th>
+                <th class="px-4 py-2">Product</th>
+                <th class="px-4 py-2">Category</th>
+                <th class="px-4 py-2">Quantity</th>
+                <th class="px-4 py-2">Total Price</th>
+                <th class="px-4 py-2">Order Date</th>
+                <th class="px-4 py-2">Delivery Date</th>
+                <th class="px-4 py-2">Payment</th>
+                <th class="px-4 py-2">Delivery</th>
+                <th class="px-4 py-2">Address</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="order : ${entry.value}" class="border-t">
+                <td class="px-4 py-2" th:text="${order.orderId}">ID</td>
+                <td class="px-4 py-2" th:text="${order.product.productName}">Product</td>
+                <td class="px-4 py-2" th:text="${order.category.name}">Category</td>
+                <td class="px-4 py-2" th:text="${order.quantity + ' kg'}">Qty</td>
+                <td class="px-4 py-2 text-green-700 font-bold" th:text="'₹' + ${order.totalPrice}">Price</td>
+                <td class="px-4 py-2" th:text="${order.orderDate}">Order Date</td>
+                <td class="px-4 py-2" th:text="${order.deliveryDate}">Delivery Date</td>
+                <td class="px-4 py-2">
+                    <div th:text="${order.paymentMethod}"></div>
+                    <div th:text="${order.paymentStatus}"></div>
+                </td>
+                <td class="px-4 py-2 text-red-600" th:text="${order.deliveryStatus}">Delivery Status</td>
+                <td class="px-4 py-2">
+                    <div th:text="${order.address.first_name + ' ' + order.address.last_name}"></div>
+                    <div th:text="${order.address.house_number + ', ' + order.address.street + ', ' + order.address.area + ', ' + order.address.city + ' - ' + order.address.pincode}"></div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
 
-    <!-- Product 2 -->
-    <div class="bg-white p-6 rounded-lg shadow-lg animate-fade-in-up">
-        <h3 class="text-2xl font-bold text-gray-800 mb-4">🍅 Organic Tomato</h3>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-            <div class="bg-gray-50 p-3 rounded-md border">
-                <p class="text-sm text-gray-600">Order Date:</p>
-                <p class="text-base font-medium text-gray-800">May 22, 2025</p>
-            </div>
-            <div class="bg-gray-50 p-3 rounded-md border">
-                <p class="text-sm text-gray-600">Estimated Delivery:</p>
-                <p class="text-base font-medium text-gray-800">May 26, 2025</p>
-            </div>
-            <div class="bg-gray-50 p-3 rounded-md border">
-                <p class="text-sm text-gray-600">Payment Type:</p>
-                <p class="text-base font-medium text-gray-800">COD</p>
-            </div>
-            <div class="bg-gray-50 p-3 rounded-md border">
-                <p class="text-sm text-gray-600">Payment Status:</p>
-                <span class="inline-block mt-1 px-3 py-1 text-sm font-semibold text-yellow-800 bg-yellow-100 rounded-full">
-                    Pending
-                </span>
-            </div>
-        </div>
-
-        <div class="space-y-1 text-gray-700">
-            <p><strong>Category:</strong> Vegetables</p>
-            <p><strong>Quantity:</strong> 3 kg</p>
-            <p><strong>Price/kg:</strong> ₹40</p>
-            <p><strong>Total:</strong> <span class="text-green-700 font-bold">₹120</span></p>
+        <!-- Invoice Summary Below Each Table -->
+        <div class="bg-white shadow-md rounded p-4 border border-green-200">
+            <h3 class="text-lg font-semibold mb-2 text-green-700">🧾 Invoice Summary for <span th:text="${entry.key}"></span></h3>
+            <ul class="text-sm text-gray-800 list-disc pl-5">
+                <li>Total Orders: <span th:text="${entry.value.size()}"></span></li>
+                <li>Total Quantity: <span th:text="${#numbers.formatDecimal(entry.value.![quantity].stream().reduce(0, (a, b) -> a + b), 0, 'POINT', 0, 'NONE') + ' kg'}"></span></li>
+                <li>Total Price: ₹<span th:text="${#numbers.formatDecimal(entry.value.![totalPrice].stream().reduce(0, (a, b) -> a + b), 2, 'POINT', 0, 'NONE')}"></span></li>
+            </ul>
         </div>
     </div>
 
-    <!-- Product 3 -->
-    <div class="bg-white p-6 rounded-lg shadow-lg animate-fade-in-up">
-        <h3 class="text-2xl font-bold text-gray-800 mb-4">🍚 Basmati Rice</h3>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-            <div class="bg-gray-50 p-3 rounded-md border">
-                <p class="text-sm text-gray-600">Order Date:</p>
-                <p class="text-base font-medium text-gray-800">May 20, 2025</p>
-            </div>
-            <div class="bg-gray-50 p-3 rounded-md border">
-                <p class="text-sm text-gray-600">Estimated Delivery:</p>
-                <p class="text-base font-medium text-gray-800">May 25, 2025</p>
-            </div>
-            <div class="bg-gray-50 p-3 rounded-md border">
-                <p class="text-sm text-gray-600">Payment Type:</p>
-                <p class="text-base font-medium text-gray-800">Online</p>
-            </div>
-            <div class="bg-gray-50 p-3 rounded-md border">
-                <p class="text-sm text-gray-600">Payment Status:</p>
-                <span class="inline-block mt-1 px-3 py-1 text-sm font-semibold text-green-800 bg-green-100 rounded-full">
-                    Payment Confirmed
-                </span>
-            </div>
-        </div>
-
-        <div class="space-y-1 text-gray-700">
-            <p><strong>Category:</strong> Grains</p>
-            <p><strong>Quantity:</strong> 5 kg</p>
-            <p><strong>Price/kg:</strong> ₹60</p>
-            <p><strong>Total:</strong> <span class="text-green-700 font-bold">₹300</span></p>
-        </div>
+    <div th:if="${groupedOrders == null or groupedOrders.isEmpty()}" class="text-center text-gray-500 text-lg">
+        <p>No non-delivered orders found.</p>
     </div>
-
 </div>
 
 </body>
