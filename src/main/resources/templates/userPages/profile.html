@@ -8,21 +8,49 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
 <body class="bg-gray-100">
+
+<script th:inline="javascript">
+    localStorage.setItem("userId", /*[[${user.userId}]]*/);
+    localStorage.setItem("profileImageUrl", /*[[${user.profileImageUrl}]]*/ || '');
+</script>
+
 <div class="container mx-auto py-8">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Left Panel: User Info -->
         <div class="bg-white p-6 rounded-lg shadow-lg">
             <div class="flex items-center space-x-4 mb-6">
-                <img th:src="@{${user.profileImageUrl}}" alt="Profile Image"
-                     class="w-24 h-24 rounded-full border-2 border-gray-300">
+                <div class="relative group">
+                    <img th:src="@{${user.profileImageUrl ?: '/images/default-profile.png'}}"
+                         id="profileImage"
+                         class="w-24 h-24 rounded-full border-2 border-gray-300 object-cover">
+                    <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 group-hover:bg-opacity-50 rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100">
+                        <button onclick="openImageUpload()"
+                                class="text-white p-2 rounded-full hover:bg-blue-600 transition-colors duration-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+                        <button onclick="confirmRemoveImage()"
+                                class="text-white p-2 rounded-full hover:bg-red-600 transition-colors duration-300 ml-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
                 <div>
                     <h2 class="text-xl font-semibold">Edit Profile</h2>
                 </div>
             </div>
             <form id="profile-form" class="space-y-3">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Name</label>
-                    <input type="text" th:value="${user.user_firstName + ' ' + user.user_lastName}" id="profileName"
+                    <label class="block text-sm font-medium text-gray-700">First Name</label>
+                    <input type="text" th:value="${user.user_firstName}" id="profileFirstName"
+                           class="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Last Name</label>
+                    <input type="text" th:value="${user.user_lastName}" id="profileLastName"
                            class="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled>
                 </div>
                 <div>
@@ -35,13 +63,6 @@
                     <input type="text" th:value="${user.mobileNumber}" id="profilePhone"
                            class="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Address</label>
-                    <input type="text"
-                           th:value="${user.addresses[0]?.house_number + ', ' + user.addresses[0]?.street + ', ' + user.addresses[0]?.pincode}"
-                           id="profileAddress"
-                           class="mt-1 block w-full border border-gray-300 rounded-md p-2" disabled>
-                </div>
                 <button type="button" onclick="openModal('details')"
                         class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
                     Edit Details
@@ -50,48 +71,65 @@
         </div>
 
         <!-- Right Panel: Addresses -->
+        <!-- Right Panel: Addresses -->
         <div class="bg-white p-6 rounded-lg shadow-lg">
             <h2 class="text-xl font-semibold mb-4">Saved Addresses</h2>
             <div class="space-y-3">
                 <div th:each="addr, iterStat : ${addresses}" th:id="${'address' + iterStat.index}"
                      class="flex items-start justify-between border p-3 rounded bg-gray-50">
                     <div class="text-sm">
-                        <p class="text-gray-500 font-medium mb-1" th:text="'Address ' + (iterStat.index + 1)"></p>
+                        <!-- Choose one of these working solutions -->
+                        <p class="text-gray-500 font-medium mb-1" th:text="|Address ${iterStat.index + 1}|"></p>
+
                         <p>
                             <strong th:text="${addr.house_number}"></strong>,
-                            <span th:text="${addr.street}"></span> - <span th:text="${addr.pincode}"></span>
+                            <span th:text="${addr.street}"></span>,
+                            <span th:text="${addr.area}"></span>,
+                            <span th:text="${addr.city}"></span> -
+                            <span th:text="${addr.pincode}"></span>
                         </p>
-                        <input type="hidden" th:value="${addr.house_number}" class="addr"/>
-                        <input type="hidden" th:value="${addr.street}" class="city"/>
-                        <input type="hidden" th:value="${addr.pincode}" class="pin"/>
+                        <p class="mt-1" th:text="${addr.first_name + ' ' + addr.last_name}"></p>
+                        <p th:text="${addr.email}"></p>
+                        <p th:text="${addr.number}"></p>
                     </div>
                     <div class="space-x-2">
-                        <button th:onclick="|openAddressModal(${iterStat.index})|"
-                                class="text-sm bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">Edit
-                        </button>
-                        <button th:onclick="|confirmDeleteAddress(${iterStat.index})|"
-                                class="text-sm bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Delete
-                        </button>
+                        <button th:onclick="|openAddressEditModal(${addr.id})|"
+                                class="text-sm bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">Edit</button>
+                        <button th:onclick="|confirmDeleteAddress(${addr.id})|"
+                                class="text-sm bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Delete</button>
                     </div>
-                </div>
-            </div>
+                </div>              </div>
         </div>
     </div>
 </div>
+
 <div id="modals"></div>
+
 <script>
-    let currentAction = '';
-    let currentAddressId = null;
+    let modalValues = {
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        profileImage: localStorage.getItem('profileImageUrl') || ''
+    };
 
     function openModal(action) {
-        currentAction = action;
         if (action === 'details') {
             document.getElementById('modals').innerHTML = getEditDetailsModal();
-            document.getElementById('modalName').value = document.getElementById('profileName').value;
-            document.getElementById('modalEmail').value = document.getElementById('profileEmail').value;
-            document.getElementById('modalPhone').value = document.getElementById('profilePhone').value;
-            document.getElementById('modalAddress').value = document.getElementById('profileAddress').value;
-            document.getElementById('editModal').classList.remove('hidden');
+            setTimeout(() => {
+                modalValues.firstName = document.getElementById('profileFirstName').value;
+                modalValues.lastName = document.getElementById('profileLastName').value;
+                modalValues.email = document.getElementById('profileEmail').value;
+                modalValues.phone = document.getElementById('profilePhone').value;
+
+                document.getElementById('modalFirstName').value = modalValues.firstName;
+                document.getElementById('modalLastName').value = modalValues.lastName;
+                document.getElementById('modalEmail').value = modalValues.email;
+                document.getElementById('modalPhone').value = modalValues.phone;
+
+                document.getElementById('editModal').classList.remove('hidden');
+            }, 50);
         }
     }
 
@@ -101,25 +139,30 @@
     }
 
     function updateDetails() {
+        modalValues.firstName = document.getElementById('modalFirstName').value.trim();
+        modalValues.lastName = document.getElementById('modalLastName').value.trim();
+        modalValues.email = document.getElementById('modalEmail').value.trim();
+        modalValues.phone = document.getElementById('modalPhone').value.trim();
+
         closeModal('editModal');
         showVerificationModal();
     }
 
     function showVerificationModal() {
         document.getElementById('modals').innerHTML += `
-          <div id="verifyOptionModal" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-            <div class="bg-white p-6 rounded-lg w-full max-w-sm animate__animated animate__fadeInDown relative">
-              <button onclick="closeModal('verifyOptionModal')" class="absolute top-2 right-3 text-gray-500 hover:text-red-600 text-2xl font-bold">&times;</button>
-              <h3 class="text-lg font-semibold mb-4">Phone Verification</h3>
-              <div class="space-y-3">
-                <button onclick="selectVerification('phone')" class="w-full bg-yellow-500 text-white py-2 rounded hover:bg-yellow-600">Verify via Phone</button>
+            <div id="verifyOptionModal" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+              <div class="bg-white p-6 rounded-lg w-full max-w-sm animate__animated animate__fadeInDown relative">
+                <button onclick="closeModal('verifyOptionModal')" class="absolute top-2 right-3 text-gray-500 hover:text-red-600 text-2xl font-bold">&times;</button>
+                <h3 class="text-lg font-semibold mb-4">Phone Verification</h3>
+                <div class="space-y-3">
+                  <button onclick="selectVerification()" class="w-full bg-yellow-500 text-white py-2 rounded hover:bg-yellow-600">Verify via Phone</button>
+                </div>
               </div>
-            </div>
-          </div>`;
+            </div>`;
     }
 
-    function selectVerification(method) {
-        const phone = document.getElementById('profilePhone').value;
+    function selectVerification() {
+        const phone =document.getElementById('profilePhone').value;
         fetch('/send-otp?phone=' + encodeURIComponent(phone), { method: 'POST' })
             .then(() => {
                 document.getElementById('verifyOptionModal').classList.add('hidden');
@@ -145,44 +188,81 @@
 
     function verifyOTP() {
         const otp = document.getElementById('otpInput').value;
-        const phone = document.getElementById('profilePhone').value;
+        const phone =document.getElementById('profilePhone').value;
 
-        if (otp.length === 6 && /^\d{6}$/.test(otp)) {
-            fetch('/verify-otp', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `phone=${encodeURIComponent(phone)}&otp=${encodeURIComponent(otp)}`
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    document.getElementById('otpModal').classList.add('hidden');
-
-                    const name = document.getElementById('modalName').value.trim();
-                    const email = document.getElementById('modalEmail').value.trim();
-                    const newPhone = document.getElementById('modalPhone').value.trim();
-                    const address = document.getElementById('modalAddress').value.trim();
-                    const userId = localStorage.getItem('userId');
-
-                    fetch('/user/update-profile', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ userId, name, email, phone: newPhone, address })
-                    })
-                    .then(res => {
-                        if (res.ok) {
-                            window.location.reload();
-                        } else {
-                            alert("Update failed.");
-                        }
-                    });
-                } else {
-                    alert("Invalid OTP.");
-                }
-            });
-        } else {
+        if (otp.length !== 6 || !/^\d{6}$/.test(otp)) {
             alert("Please enter a valid 6-digit OTP.");
+            return;
         }
+
+        fetch('/verify-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `phone=${encodeURIComponent(phone)}&otp=${encodeURIComponent(otp)}`
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('OTP verification failed');
+            return res.json();
+        })
+        .then(data => {
+            if (!data.success) throw new Error('Invalid OTP');
+            document.getElementById('otpModal').classList.add('hidden');
+            submitProfileUpdate();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert(error.message || "OTP verification failed");
+        });
+    }
+
+    function submitProfileUpdate() {
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+            alert("User session expired. Please reload the page.");
+            return;
+        }
+
+        const { firstName, lastName, email, phone, profileImage } = modalValues;
+
+        if (!firstName || !lastName || !email || !phone) {
+            alert("All fields are required.");
+            return;
+        }
+
+        if (!email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
+            alert("Please enter a valid email address.");
+            return;
+        }
+
+        if (!phone.match(/^\d{10,15}$/)) {
+            alert("Phone number must be 10-15 digits.");
+            return;
+        }
+
+        fetch('/user/update-profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId: userId,
+                first_name: firstName,
+                last_name: lastName,
+                email: email,
+                phone: phone,
+                profile_image: profileImage
+            })
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Update failed');
+            return response.text();
+        })
+        .then(message => {
+            alert(message);
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("Update failed: " + error.message);
+        });
     }
 
     function getEditDetailsModal() {
@@ -192,15 +272,397 @@
               <button onclick="closeModal('editModal')" class="absolute top-2 right-3 text-gray-500 hover:text-red-600 text-2xl font-bold">&times;</button>
               <h3 class="text-lg font-semibold mb-4">Edit Your Details</h3>
               <form class="space-y-3">
-                <input type="text" id="modalName" class="w-full p-2 border rounded" placeholder="Name">
+                <input type="text" id="modalFirstName" class="w-full p-2 border rounded" placeholder="First Name">
+                <input type="text" id="modalLastName" class="w-full p-2 border rounded" placeholder="Last Name">
                 <input type="email" id="modalEmail" class="w-full p-2 border rounded" placeholder="Email">
                 <input type="text" id="modalPhone" class="w-full p-2 border rounded" placeholder="Phone">
-                <input type="text" id="modalAddress" class="w-full p-2 border rounded" placeholder="Address">
                 <button type="button" onclick="updateDetails()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">Update Details</button>
               </form>
             </div>
           </div>`;
     }
+
+    function openImageUpload() {
+        document.getElementById('modals').innerHTML = `
+            <div id="imageUploadModal" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+                <div class="bg-white p-6 rounded-lg w-full max-w-md relative animate__animated animate__fadeIn">
+                    <button onclick="closeModal('imageUploadModal')" class="absolute top-2 right-3 text-gray-500 hover:text-red-600 text-2xl font-bold">&times;</button>
+                    <h3 class="text-lg font-semibold mb-4">Upload Profile Image</h3>
+                    <form id="imageUploadForm" class="space-y-4">
+                        <input type="file" id="profileImageInput" accept="image/*" class="w-full">
+                        <div class="flex justify-center">
+                            <img id="imagePreview" src="" class="max-h-40 hidden rounded-md border">
+                        </div>
+                        <button type="button" onclick="uploadProfileImage()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">Upload</button>
+                    </form>
+                </div>
+            </div>`;
+        document.getElementById('imageUploadModal').classList.remove('hidden');
+
+        document.getElementById('profileImageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const preview = document.getElementById('imagePreview');
+                    preview.src = event.target.result;
+                    preview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    function uploadProfileImage() {
+        const fileInput = document.getElementById('profileImageInput');
+        const file = fileInput.files[0];
+
+        if (!file) {
+            alert('Please select an image file');
+            return;
+        }
+
+        if (!file.type.match('image.*')) {
+            alert('Please select an image file (JPEG, PNG, etc.)');
+            return;
+        }
+
+        if (file.size > 2 * 1024 * 1024) {
+            alert('Image size should be less than 2MB');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        fetch('/user/upload-profile-image', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Upload failed');
+            return response.text();
+        })
+        .then(imagePath => {
+            document.getElementById('profileImage').src = imagePath;
+            modalValues.profileImage = imagePath;
+            localStorage.setItem('profileImageUrl', imagePath);
+            updateProfileImageInDatabase(imagePath);
+            closeModal('imageUploadModal');
+            alert('Profile image updated successfully!');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to upload image: ' + error.message);
+        });
+    }
+
+    function updateProfileImageInDatabase(imagePath) {
+        const userId = localStorage.getItem('userId');
+        if (!userId) return Promise.reject('User session expired');
+
+        return fetch('/user/update-profile-image', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId: userId,
+                profile_image: imagePath
+            })
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Database update failed');
+        });
+    }
+
+    function confirmRemoveImage() {
+        document.getElementById('modals').innerHTML = `
+            <div id="confirmRemoveModal" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+                <div class="bg-white p-6 rounded-lg w-full max-w-sm animate__animated animate__fadeIn">
+                    <h3 class="text-lg font-semibold mb-4">Remove Profile Image</h3>
+                    <p class="mb-4">Are you sure you want to remove your profile image?</p>
+                    <div class="flex space-x-3">
+                        <button onclick="removeProfileImage()" class="flex-1 bg-red-600 text-white py-2 rounded hover:bg-red-700">Remove</button>
+                        <button onclick="closeModal('confirmRemoveModal')" class="flex-1 bg-gray-500 text-white py-2 rounded hover:bg-gray-600">Cancel</button>
+                    </div>
+                </div>
+            </div>`;
+        document.getElementById('confirmRemoveModal').classList.remove('hidden');
+    }
+
+    function removeProfileImage() {
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+            alert("User session expired. Please reload the page.");
+            return;
+        }
+
+        fetch('/user/remove-profile-image', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: userId })
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to remove image');
+            document.getElementById('profileImage').src = '/images/default-profile.png';
+            modalValues.profileImage = '';
+            localStorage.setItem('profileImageUrl', '');
+            closeModal('confirmRemoveModal');
+            alert('Profile image removed successfully!');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to remove image: ' + error.message);
+        });
+    }
+
+    // Add to modalValues object
+let addressValues = {
+    id: '',
+    first_name: '',
+    last_name: '',
+    email: '',
+    number: '',
+    street: '',
+    city: '',
+    area: '',
+    house_number: '',
+    pincode: ''
+};
+
+function openAddressEditModal(addressId) {
+    // Fetch address details
+    fetch(`/user/get-address/${addressId}`)
+        .then(response => response.json())
+        .then(address => {
+            addressValues = {
+                id: address.id,
+                first_name: address.first_name,
+                last_name: address.last_name,
+                email: address.email,
+                number: address.number,
+                street: address.street,
+                city: address.city,
+                area: address.area,
+                house_number: address.house_number,
+                pincode: address.pincode
+            };
+
+            document.getElementById('modals').innerHTML = getAddressEditModal();
+            setTimeout(() => {
+                document.getElementById('addressFirstName').value = addressValues.first_name;
+                document.getElementById('addressLastName').value = addressValues.last_name;
+                document.getElementById('addressEmail').value = addressValues.email;
+                document.getElementById('addressPhone').value = addressValues.number;
+                document.getElementById('addressHouseNumber').value = addressValues.house_number;
+                document.getElementById('addressStreet').value = addressValues.street;
+                document.getElementById('addressCity').value = addressValues.city;
+                document.getElementById('addressArea').value = addressValues.area;
+                document.getElementById('addressPincode').value = addressValues.pincode;
+
+                document.getElementById('addressEditModal').classList.remove('hidden');
+            }, 50);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to load address details');
+        });
+}
+
+function getAddressEditModal() {
+    return `
+    <div id="addressEditModal" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg w-full max-w-md relative animate__animated animate__fadeIn">
+            <button onclick="closeModal('addressEditModal')" class="absolute top-2 right-3 text-gray-500 hover:text-red-600 text-2xl font-bold">&times;</button>
+            <h3 class="text-lg font-semibold mb-4">Edit Address</h3>
+            <form class="space-y-3">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">First Name</label>
+                        <input type="text" id="addressFirstName" class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Last Name</label>
+                        <input type="text" id="addressLastName" class="w-full p-2 border rounded">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" id="addressEmail" class="w-full p-2 border rounded">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Phone</label>
+                    <input type="text" id="addressPhone" class="w-full p-2 border rounded">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">House No.</label>
+                        <input type="text" id="addressHouseNumber" class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Street</label>
+                        <input type="text" id="addressStreet" class="w-full p-2 border rounded">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Area</label>
+                        <input type="text" id="addressArea" class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">City</label>
+                        <input type="text" id="addressCity" class="w-full p-2 border rounded">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Pincode</label>
+                    <input type="text" id="addressPincode" class="w-full p-2 border rounded">
+                </div>
+                <button type="button" onclick="updateAddressDetails()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">Update Address</button>
+            </form>
+        </div>
+    </div>`;
+}
+
+function updateAddressDetails() {
+    // Store the updated values
+    addressValues.first_name = document.getElementById('addressFirstName').value.trim();
+    addressValues.last_name = document.getElementById('addressLastName').value.trim();
+    addressValues.email = document.getElementById('addressEmail').value.trim();
+    addressValues.number = document.getElementById('addressPhone').value.trim();
+    addressValues.house_number = document.getElementById('addressHouseNumber').value.trim();
+    addressValues.street = document.getElementById('addressStreet').value.trim();
+    addressValues.city = document.getElementById('addressCity').value.trim();
+    addressValues.area = document.getElementById('addressArea').value.trim();
+    addressValues.pincode = document.getElementById('addressPincode').value.trim();
+
+    closeModal('addressEditModal');
+    showAddressVerificationModal();
+}
+
+function showAddressVerificationModal() {
+    document.getElementById('modals').innerHTML += `
+        <div id="addressVerifyModal" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+            <div class="bg-white p-6 rounded-lg w-full max-w-sm animate__animated animate__fadeInDown relative">
+                <button onclick="closeModal('addressVerifyModal')" class="absolute top-2 right-3 text-gray-500 hover:text-red-600 text-2xl font-bold">&times;</button>
+                <h3 class="text-lg font-semibold mb-4">Phone Verification</h3>
+                <p class="mb-4">We'll send an OTP to verify your phone number</p>
+                <div class="space-y-3">
+                    <button onclick="sendAddressVerificationOTP()" class="w-full bg-yellow-500 text-white py-2 rounded hover:bg-yellow-600">Send OTP</button>
+                </div>
+            </div>
+        </div>`;
+}
+
+function sendAddressVerificationOTP() {
+    const phone = addressValues.number;
+    fetch('/send-otp?phone=' + encodeURIComponent(phone), { method: 'POST' })
+        .then(() => {
+            document.getElementById('addressVerifyModal').classList.add('hidden');
+            document.getElementById('modals').innerHTML += getAddressOTPModal();
+            document.getElementById('addressOtpModal').classList.remove('hidden');
+        })
+        .catch(() => alert("Failed to send OTP."));
+}
+
+function getAddressOTPModal() {
+    return `
+    <div id="addressOtpModal" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg w-full max-w-sm animate__animated animate__fadeInUp relative">
+            <button onclick="closeModal('addressOtpModal')" class="absolute top-2 right-3 text-gray-500 hover:text-red-600 text-2xl font-bold">&times;</button>
+            <h3 class="text-lg font-semibold mb-4">Enter 6-digit OTP</h3>
+            <input type="text" maxlength="6" id="addressOtpInput"
+                    class="mt-1 block w-full border border-gray-300 rounded-md p-2 text-center text-xl tracking-widest"
+                    placeholder="______">
+            <button onclick="verifyAddressOTP()" class="mt-4 w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">Verify</button>
+        </div>
+    </div>`;
+}
+
+function verifyAddressOTP() {
+    const otp = document.getElementById('addressOtpInput').value;
+    const phone = addressValues.number;
+
+    if (otp.length !== 6 || !/^\d{6}$/.test(otp)) {
+        alert("Please enter a valid 6-digit OTP.");
+        return;
+    }
+
+    fetch('/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `phone=${encodeURIComponent(phone)}&otp=${encodeURIComponent(otp)}`
+    })
+    .then(res => {
+        if (!res.ok) throw new Error('OTP verification failed');
+        return res.json();
+    })
+    .then(data => {
+        if (!data.success) {
+            throw new Error('Invalid OTP');
+        }
+        document.getElementById('addressOtpModal').classList.add('hidden');
+        submitAddressUpdate();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert(error.message || "OTP verification failed");
+    });
+}
+
+function submitAddressUpdate() {
+    fetch('/user/update-address', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(addressValues)
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Update failed');
+        return response.text();
+    })
+    .then(message => {
+        alert(message);
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("Update failed: " + error.message);
+    });
+}
+
+function confirmDeleteAddress(addressId) {
+    document.getElementById('modals').innerHTML = `
+        <div id="confirmDeleteModal" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+            <div class="bg-white p-6 rounded-lg w-full max-w-sm animate__animated animate__fadeIn">
+                <h3 class="text-lg font-semibold mb-4">Delete Address</h3>
+                <p class="mb-4">Are you sure you want to delete this address?</p>
+                <div class="flex space-x-3">
+                    <button onclick="deleteAddress(${addressId})" class="flex-1 bg-red-600 text-white py-2 rounded hover:bg-red-700">Delete</button>
+                    <button onclick="closeModal('confirmDeleteModal')" class="flex-1 bg-gray-500 text-white py-2 rounded hover:bg-gray-600">Cancel</button>
+                </div>
+            </div>
+        </div>`;
+    document.getElementById('confirmDeleteModal').classList.remove('hidden');
+}
+
+function deleteAddress(addressId) {
+    fetch('/user/delete-address', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ addressId: addressId })
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Delete failed');
+        return response.text();
+    })
+    .then(message => {
+        alert(message);
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("Delete failed: " + error.message);
+    });
+}
 </script>
 
 </body>
