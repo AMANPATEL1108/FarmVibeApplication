@@ -1,19 +1,23 @@
 package com.FarmVibeApplication.api.controller;
 
 import com.FarmVibeApplication.api.Repository.AddressRepository;
+import com.FarmVibeApplication.api.Repository.OrderRepository;
 import com.FarmVibeApplication.api.Repository.ProductRepository;
 import com.FarmVibeApplication.api.Repository.UserRepository;
 import com.FarmVibeApplication.api.model.Address;
+import com.FarmVibeApplication.api.model.Order;
 import com.FarmVibeApplication.api.model.ProductDetails;
 import com.FarmVibeApplication.api.model.User;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class UserPageController {
@@ -26,6 +30,9 @@ public class UserPageController {
 
     @Autowired
     private AddressRepository addressRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
 
     @GetMapping("/")
     public String home(Model model) {
@@ -41,6 +48,7 @@ public class UserPageController {
                                 @RequestParam(value = "orderDate", required = false) String orderDate,
                                 @RequestParam(value = "deliveryDate", required = false) String deliveryDate,
                                 @RequestParam(value = "userId", required = false) Long userId,
+                                @RequestParam(value = "orderStatus", required = false) String orderStatus,
                                 Model model) {
 
         if ("products".equals(page)) {
@@ -58,7 +66,6 @@ public class UserPageController {
             if (productId == null || qty == null || orderDate == null || deliveryDate == null || userId == null) {
                 return "redirect:/pageUrl?page=products";
             }
-
             Optional<ProductDetails> productOpt = productRepository.findById(productId);
             Optional<User> userOpt = userRepository.findById(userId);
 
@@ -78,7 +85,17 @@ public class UserPageController {
             model.addAttribute("newAddress", new Address());
         }
 
+        if ("order-detail".equals(page)) {
+            String statusToFilter = (orderStatus != null && !orderStatus.isEmpty()) ? orderStatus : "Not Delivered";
+            List<Order> filteredOrders = orderRepository.findByDeliveryStatus(statusToFilter);
+            Map<LocalDate, List<Order>> groupedOrders = filteredOrders.stream()
+                    .collect(Collectors.groupingBy(Order::getDeliveryDate));
+            model.addAttribute("groupedOrders", groupedOrders);
+            model.addAttribute("selectedStatus", statusToFilter);
+        }
+
         model.addAttribute("contentPage", "userPages/" + page);
         return "usermaster";
     }
 }
+
