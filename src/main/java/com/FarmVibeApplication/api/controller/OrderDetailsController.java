@@ -25,27 +25,38 @@ public class OrderDetailsController {
     @Autowired
     private OrderRepository orderRepository;
 
-    @GetMapping("pageUrl?page=/orders")
-    public String showOrderDetails(Model model) {
-        List<Order> nonDeliveredOrders = orderRepository.findByDeliveryStatus("Not Delivered");
+    // ✅ Updated Mapping: Use a unique path to avoid conflict with UserPageController
+    @GetMapping("/order-details")
+    public String showOrderDetails(@RequestParam("orderStatus") String orderStatus,
+                                   @RequestParam("userId") Long userId,
+                                   Model model) {
+        List<Order> userOrders = orderRepository.findByDeliveryStatus(orderStatus)
+                .stream()
+                .filter(order -> order.getUser().getUserId().equals(userId))
+                .collect(Collectors.toList());
 
-        Map<LocalDate, List<Order>> groupedOrders = nonDeliveredOrders.stream()
+        Map<LocalDate, List<Order>> groupedOrders = userOrders.stream()
                 .collect(Collectors.groupingBy(Order::getDeliveryDate));
 
         model.addAttribute("groupedOrders", groupedOrders);
         return "order-detail";
     }
 
-    @GetMapping("//download-invoice-order")
-    public void downloadInvoice(@RequestParam("deliveryDate") String deliveryDateStr, HttpServletResponse response) {
+    @GetMapping("/download-invoice-order")
+    public void downloadInvoice(@RequestParam("deliveryDate") String deliveryDateStr,
+                                @RequestParam("userId") Long userId,
+                                HttpServletResponse response) {
         try {
             LocalDate deliveryDate = LocalDate.parse(deliveryDateStr);
-            List<Order> orders = orderRepository.findByDeliveryStatus("Not Delivered").stream()
+
+            List<Order> orders = orderRepository.findByDeliveryStatus("Not Delivered")
+                    .stream()
                     .filter(order -> deliveryDate.equals(order.getDeliveryDate()))
+                    .filter(order -> order.getUser().getUserId().equals(userId))
                     .collect(Collectors.toList());
 
             if (orders.isEmpty()) {
-                response.sendRedirect("/pageUrl?page=/orders");
+                response.sendRedirect("/order-details?orderStatus=Not Delivered&userId=" + userId);
                 return;
             }
 
