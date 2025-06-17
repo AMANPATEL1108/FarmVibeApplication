@@ -81,24 +81,34 @@ public class UserPageController {
             model.addAttribute("orderDate", LocalDate.parse(orderDate));
             model.addAttribute("deliveryDate", LocalDate.parse(deliveryDate));
             model.addAttribute("userId", user.getUserId());
+            System.out.println("User id 1 is "+user.getUserId());
             model.addAttribute("addresses", addressRepository.findByUser_userId(user.getUserId()));
             model.addAttribute("newAddress", new Address());
         }
 
         if ("order-detail".equals(page)) {
-            String statusToFilter = (orderStatus != null && !orderStatus.isEmpty()) ? orderStatus : "Not Delivered";
-            List<Order> filteredOrders = orderRepository.findByDeliveryStatus(statusToFilter);
-
-            if (userId != null) {
-                filteredOrders = filteredOrders.stream()
-                        .filter(order -> order.getUser().getUserId().equals(userId))
-                        .collect(Collectors.toList());
+            if (userId == null) {
+                System.out.println("❌ userId is null. Redirecting to home.");
+                return "redirect:/";
             }
 
+            String statusToFilter = (orderStatus != null && !orderStatus.isEmpty()) ? orderStatus : "Not Delivered";
+
+            // Filter orders by delivery status and userId
+            List<Order> filteredOrders = orderRepository.findByDeliveryStatus(statusToFilter).stream()
+                    .filter(order -> order.getUser().getUserId().equals(userId))
+                    .collect(Collectors.toList());
+
+            // Group orders by delivery date
             Map<LocalDate, List<Order>> groupedOrders = filteredOrders.stream()
                     .collect(Collectors.groupingBy(Order::getDeliveryDate));
+
+            // Add attributes to model
             model.addAttribute("groupedOrders", groupedOrders);
             model.addAttribute("selectedStatus", statusToFilter);
+            model.addAttribute("userId", userId); // ✅ Ensures it's available in Thymeleaf
+
+            System.out.println("✅ userId found and passed to view: " + userId);
         }
 
         if ("order-history-old".equals(page)) {

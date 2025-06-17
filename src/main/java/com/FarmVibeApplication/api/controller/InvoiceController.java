@@ -8,12 +8,19 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.OutputStream;
+import java.io.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,36 +32,77 @@ public class InvoiceController {
 
     @GetMapping("/download-delivered-invoice")
     public void downloadDeliveredInvoice(
-            @RequestParam(value = "deliveryDate", required = true) String deliveryDateStr,
-            @RequestParam(value = "userId", required = true) Long userId,
+            @RequestParam("deliveryDate") String deliveryDateStr,
+            @RequestParam("userId") Long userId,
             HttpServletResponse response) {
 
         try {
-            // Validate parameters
-            if (deliveryDateStr == null || userId == null) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing required parameters");
+            if (deliveryDateStr == null || deliveryDateStr.isEmpty() || userId == null) {
+                sendError(response, HttpServletResponse.SC_BAD_REQUEST, "Missing required parameters");
                 return;
             }
 
             LocalDate deliveryDate = LocalDate.parse(deliveryDateStr);
+
             List<Order> orders = orderRepository.findByDeliveryDateAndDeliveryStatus(deliveryDate, "Delivered")
                     .stream()
                     .filter(order -> order.getUser().getUserId().equals(userId))
                     .collect(Collectors.toList());
 
             if (orders.isEmpty()) {
-                response.sendRedirect("/pageUrl?page=order-history-old&orderStatus=Delivered&userId=" + userId);
+                sendError(response, HttpServletResponse.SC_NOT_FOUND, "No orders found for the given date and user");
                 return;
             }
 
+            response.setContentType("application/pdf");
+            String fileName = String.format("invoice_%d_%s.pdf", userId, deliveryDate);
+            response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+
             generateInvoicePDF(response, deliveryDate, orders, userId);
+
+        } catch (DateTimeParseException e) {
+            sendError(response, HttpServletResponse.SC_BAD_REQUEST, "Invalid date format");
+        } catch (IOException e) {
+            sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error generating invoice: " + e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
-            try {
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error generating invoice");
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Unexpected error occurred: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/download-active-invoice")
+    public void downloadActiveInvoice(
+            @RequestParam String deliveryDate,
+            @RequestParam Long userId,
+            HttpServletResponse response) {
+
+        try {
+            LocalDate date = LocalDate.parse(deliveryDate);
+            List<Order> activeOrders = orderRepository.findByUser_UserIdAndDeliveryDateAndDeliveryStatusNot(userId, date, "Delivered");
+
+            if (activeOrders.isEmpty()) {
+                sendError(response, HttpServletResponse.SC_NOT_FOUND, "No active orders found for this user and date.");
+                return;
             }
+
+            response.setContentType("application/pdf");
+            String fileName = String.format("active_invoice_%d_%s.pdf", userId, deliveryDate);
+            response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+
+            generateInvoicePDF(response, date, activeOrders, userId);
+
+        } catch (DateTimeParseException e) {
+            sendError(response, HttpServletResponse.SC_BAD_REQUEST, "Invalid delivery date format.");
+        } catch (Exception e) {
+            sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error generating invoice: " + e.getMessage());
+        }
+    }
+
+
+    private void sendError(HttpServletResponse response, int status, String message) {
+        try {
+            response.sendError(status, message);
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -62,31 +110,22 @@ public class InvoiceController {
                                     LocalDate deliveryDate,
                                     List<Order> orders,
                                     Long userId) throws Exception {
-        response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "attachment; filename=invoice_" + userId + "_" + deliveryDate + ".pdf");
 
         Document document = new Document(PageSize.A4.rotate());
-        PdfWriter.getInstance(document, response.getOutputStream());
 
-        try {
-            document.open();
-            addInvoiceHeader(document, deliveryDate, userId);
-            addOrderTable(document, orders);
-            addInvoiceFooter(document, orders);
-        } finally {
-            document.close();
-        }
+        PdfWriter.getInstance(document, response.getOutputStream());
+        document.open();
+
+        addInvoiceHeader(document, deliveryDate, userId);
+        addOrderTable(document, orders);
+        addInvoiceFooter(document, orders);
+
+        document.close();
     }
 
     private void addInvoiceHeader(Document document, LocalDate deliveryDate, Long userId) throws DocumentException {
         Paragraph header = new Paragraph();
         header.setAlignment(Element.ALIGN_CENTER);
-
-        // Add logo if available
-        // Image logo = Image.getInstance("path/to/logo.png");
-        // logo.scaleToFit(100, 100);
-        // header.add(logo);
-
         header.add(new Chunk("Farm Vibe - Order Invoice\n\n",
                 new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD)));
         header.add(new Chunk("User ID: " + userId + "\n",
@@ -98,14 +137,10 @@ public class InvoiceController {
     }
 
     private void addOrderTable(Document document, List<Order> orders) throws DocumentException {
-        PdfPTable table = new PdfPTable(10); // Number of columns
+        PdfPTable table = new PdfPTable(10);
         table.setWidthPercentage(100);
+        table.setWidths(new float[]{1f, 2f, 1f, 1.5f, 1.5f, 2f, 2f, 1.5f, 1.5f, 1f});
 
-        // Set column widths
-        float[] columnWidths = {1f, 2f, 1f, 1.5f, 1.5f, 2f, 2f, 1.5f, 1.5f, 1f};
-        table.setWidths(columnWidths);
-
-        // Table headers
         String[] headers = {
                 "Order ID", "Product", "Qty",
                 "Price", "User", "Mobile",
@@ -113,15 +148,14 @@ public class InvoiceController {
                 "Status"
         };
 
-        for (String header : headers) {
-            PdfPCell cell = new PdfPCell(new Phrase(header,
+        for (String headerText : headers) {
+            PdfPCell cell = new PdfPCell(new Phrase(headerText,
                     new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD)));
             cell.setBackgroundColor(new BaseColor(220, 220, 220));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             table.addCell(cell);
         }
 
-        // Table content
         Font contentFont = new Font(Font.FontFamily.HELVETICA, 9);
         for (Order order : orders) {
             addOrderRow(table, order, contentFont);
@@ -139,18 +173,20 @@ public class InvoiceController {
         table.addCell(new Phrase(String.valueOf(order.getUser().getMobileNumber()), font));
         table.addCell(new Phrase(order.getUser().getUser_email(), font));
 
-        String address = order.getAddress() != null ?
-                order.getAddress().getHouse_number() + ", " +
-                        order.getAddress().getStreet() + ", " +
-                        order.getAddress().getCity() + "-" +
-                        order.getAddress().getPincode() : "N/A";
-        table.addCell(new Phrase(address, font));
+        String address = (order.getAddress() != null)
+                ? order.getAddress().getHouse_number() + ", " +
+                order.getAddress().getStreet() + ", " +
+                order.getAddress().getCity() + " - " +
+                order.getAddress().getPincode()
+                : "N/A";
 
+        table.addCell(new Phrase(address, font));
         table.addCell(new Phrase(order.getPaymentMethod(), font));
 
         PdfPCell statusCell = new PdfPCell(new Phrase(order.getDeliveryStatus(), font));
-        statusCell.setBackgroundColor(order.getDeliveryStatus().equals("Delivered") ?
-                new BaseColor(200, 230, 200) : new BaseColor(230, 200, 200));
+        statusCell.setBackgroundColor(order.getDeliveryStatus().equalsIgnoreCase("Delivered")
+                ? new BaseColor(200, 230, 200)
+                : new BaseColor(230, 200, 200));
         table.addCell(statusCell);
     }
 

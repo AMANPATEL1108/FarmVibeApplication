@@ -13,6 +13,7 @@
         }
     </style>
 </head>
+<body class="bg-gray-100 min-h-screen font-sans">
 <div th:fragment="content" class="p-6 font-sans max-w-7xl mx-auto mt-20">
 
     <!-- Right aligned "Old Order" button -->
@@ -46,25 +47,16 @@
                 </thead>
                 <tbody>
                 <tr th:each="order : ${entry.value}" class="text-sm text-gray-700 hover:bg-gray-50 transition duration-200">
-                    <!-- Order Identification -->
                     <td class="px-4 py-2 border font-medium" th:text="${order.orderId}"></td>
-
-                    <!-- Timeline -->
                     <td class="px-4 py-2 border">
                         <div class="flex flex-col">
                             <span class="text-xs">Ordered:</span>
                             <span th:text="${order.orderDate}"></span>
-<!--                            <span class="text-xs mt-1">Delivery:</span>-->
-<!--                            <span th:text="${order.deliveryDate}"></span>-->
                         </div>
                     </td>
-
-                    <!-- Product Details -->
                     <td class="px-4 py-2 border" th:text="${order.product.name}"></td>
                     <td class="px-4 py-2 border text-center" th:text="${order.quantity}"></td>
                     <td class="px-4 py-2 border font-medium text-green-700" th:text="'₹' + ${order.totalPrice}"></td>
-
-                    <!-- Customer Info -->
                     <td class="px-4 py-2 border">
                         <div class="flex flex-col">
                             <span th:text="${order.user.user_firstName} + ' ' + ${order.user.user_lastName}"></span>
@@ -72,8 +64,6 @@
                         </div>
                     </td>
                     <td class="px-4 py-2 border" th:text="${order.user.mobileNumber}"></td>
-
-                    <!-- Shipping -->
                     <td class="px-4 py-2 border">
                         <div th:if="${order.address != null}" class="space-y-1 text-sm">
                             <div class="font-medium" th:text="${order.address.house_number} + ', ' + ${order.address.street}"></div>
@@ -84,8 +74,6 @@
                             N/A
                         </div>
                     </td>
-
-                    <!-- Payment -->
                     <td class="px-4 py-2 border">
                         <div class="flex flex-col">
                             <span th:text="${order.paymentMethod}"></span>
@@ -95,8 +83,6 @@
                                   th:text="${order.paymentStatus}"></span>
                         </div>
                     </td>
-
-                    <!-- Status -->
                     <td class="px-4 py-2 border">
                         <span th:text="${order.deliveryStatus}"
                               th:classappend="${order.deliveryStatus.equals('Delivered')} ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'"
@@ -107,26 +93,58 @@
             </table>
         </div>
 
+        <!-- Updated download link with userId from the model -->
         <div class="mt-4 text-right">
-            <a th:href="@{'/download-delivered-invoice'(deliveryDate=${entry.key}, userId=${userId})}"
-               class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-5 py-2.5 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">
+
+            <button
+                    class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-5 py-2.5 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105"
+                    th:attr="data-date=${entry.key}"
+                    onclick="downloadInvoice(this)">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                 </svg>
                 Download Invoice
-            </a>
+            </button>
+
+
+
         </div>
     </div>
-
-    <script>
-        function redirectToOldOrders() {
-            const userId = localStorage.getItem("userId");
-            if (userId) {
-                window.location.href = `/pageUrl?page=order-history-old&orderStatus=Delivered&userId=${userId}`;
-            } else {
-                alert("User not logged in");
-            }
-        }
-    </script>
 </div>
+
+<script>
+    function redirectToOldOrders() {
+        const userId = localStorage.getItem("userId");
+            console.log("useris is "+userId)
+
+
+        if (userId) {
+
+            window.location.href = `/pageUrl?page=order-history-old&orderStatus=Delivered&userId=${userId}`;
+        } else {
+            alert("User not logged in");
+        }
+    }
+
+    function downloadInvoice(button) {
+        const deliveryDate = button.getAttribute("data-date");
+        const userId = localStorage.getItem("userId");
+
+        if (!userId || !deliveryDate) {
+            alert("Missing user ID or delivery date");
+            return;
+        }
+
+        const url = `/download-active-invoice?deliveryDate=${encodeURIComponent(deliveryDate)}&userId=${userId}`;
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `invoice_${userId}_${deliveryDate}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>
+
+
+</body>
 </html>
