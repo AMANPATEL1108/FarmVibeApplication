@@ -88,14 +88,37 @@ public class UserPageController {
         if ("order-detail".equals(page)) {
             String statusToFilter = (orderStatus != null && !orderStatus.isEmpty()) ? orderStatus : "Not Delivered";
             List<Order> filteredOrders = orderRepository.findByDeliveryStatus(statusToFilter);
+
+            if (userId != null) {
+                filteredOrders = filteredOrders.stream()
+                        .filter(order -> order.getUser().getUserId().equals(userId))
+                        .collect(Collectors.toList());
+            }
+
             Map<LocalDate, List<Order>> groupedOrders = filteredOrders.stream()
                     .collect(Collectors.groupingBy(Order::getDeliveryDate));
             model.addAttribute("groupedOrders", groupedOrders);
             model.addAttribute("selectedStatus", statusToFilter);
         }
 
+        if ("order-history-old".equals(page)) {
+            if (userId == null) return "redirect:/";
+
+            String statusToFilter = (orderStatus != null && !orderStatus.isEmpty()) ? orderStatus : "Delivered";
+
+            List<Order> filteredOrders = orderRepository.findByDeliveryStatus(statusToFilter).stream()
+                    .filter(order -> order.getUser().getUserId().equals(userId))
+                    .collect(Collectors.toList());
+
+            Map<LocalDate, List<Order>> groupedOrders = filteredOrders.stream()
+                    .collect(Collectors.groupingBy(Order::getDeliveryDate));
+
+            model.addAttribute("groupedOrders", groupedOrders);
+            model.addAttribute("selectedStatus", statusToFilter);
+            model.addAttribute("userId", userId);
+        }
+
         model.addAttribute("contentPage", "userPages/" + page);
         return "usermaster";
     }
 }
-

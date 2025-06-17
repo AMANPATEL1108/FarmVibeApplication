@@ -9,5 +9,5 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByDeliveryStatus(String status);
     List<Order> findByDeliveryDateAndDeliveryStatus(LocalDate deliveryDate, String deliveryStatus);
-
+    List<Order> findByDeliveryDate(LocalDate deliveryDate);
 }

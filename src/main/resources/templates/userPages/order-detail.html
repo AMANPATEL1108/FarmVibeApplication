@@ -3,9 +3,27 @@
 <head>
     <title>Order Details</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes slideFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-fade-in {
+            animation: slideFadeIn 0.6s ease-out forwards;
+        }
+    </style>
 </head>
-<div th:fragment="content" class=" p-6 font-sans max-w-7xl mx-auto mt-20">
-    <div th:each="entry : ${groupedOrders}" class="mb-10 bg-white rounded-xl shadow-md p-6 transition transform hover:scale-[1.01] duration-300">
+<div th:fragment="content" class="p-6 font-sans max-w-7xl mx-auto mt-20">
+
+    <!-- Right aligned "Old Order" button -->
+    <div class="flex justify-end mb-6">
+        <a href="#" onclick="redirectToOldOrders()"
+           class="inline-block bg-gray-700 hover:bg-gray-800 text-white text-sm font-medium px-4 py-2 rounded-lg shadow transition duration-300">
+            Old Order History
+        </a>
+    </div>
+
+    <div th:each="entry : ${groupedOrders}" class="mb-10 bg-white rounded-xl shadow-md p-6 animate-slide-fade-in transition transform hover:scale-[1.01] duration-300">
         <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">
             Delivery Date: <span th:text="${entry.key}" class="text-blue-600 font-medium"></span>
         </h2>
@@ -15,52 +33,100 @@
                 <thead class="bg-gray-100 text-gray-700 text-sm uppercase">
                 <tr>
                     <th class="px-4 py-3 border">Order ID</th>
+                    <th class="px-4 py-3 border">Date</th>
                     <th class="px-4 py-3 border">Product</th>
-                    <th class="px-4 py-3 border">Quantity</th>
-                    <th class="px-4 py-3 border">User Name</th>
-                    <th class="px-4 py-3 border">Mobile</th>
-                    <th class="px-4 py-3 border">Email</th>
+                    <th class="px-4 py-3 border">Qty</th>
+                    <th class="px-4 py-3 border">Price</th>
+                    <th class="px-4 py-3 border">Customer</th>
+                    <th class="px-4 py-3 border">Contact</th>
                     <th class="px-4 py-3 border">Address</th>
-                    <th class="px-4 py-3 border">Total Price</th>
+                    <th class="px-4 py-3 border">Payment</th>
+                    <th class="px-4 py-3 border">Status</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="order : ${entry.value}" class="text-sm text-gray-700 hover:bg-gray-50 transition duration-200">
-                    <td class="px-4 py-2 border" th:text="${order.orderId}"></td>
-                    <td class="px-4 py-2 border" th:text="${order.product.name}"></td>
-                    <td class="px-4 py-2 border" th:text="${order.quantity}"></td>
+                    <!-- Order Identification -->
+                    <td class="px-4 py-2 border font-medium" th:text="${order.orderId}"></td>
 
-                    <!-- User Details -->
-                    <td class="px-4 py-2 border" th:text="${order.user.user_firstName} + ' ' + ${order.user.user_lastName}"></td>
-                    <td class="px-4 py-2 border" th:text="${order.user.mobileNumber}"></td>
-                    <td class="px-4 py-2 border" th:text="${order.user.user_email}"></td>
-
-                    <!-- Full Address -->
+                    <!-- Timeline -->
                     <td class="px-4 py-2 border">
-                        <div th:if="${order.address != null}" class="space-y-1 text-gray-600">
-                            <div th:text="'House No: ' + ${order.address.house_number}"></div>
-                            <div th:text="'Street: ' + ${order.address.street}"></div>
-                            <div th:text="'Area: ' + ${order.address.area}"></div>
-                            <div th:text="'City: ' + ${order.address.city}"></div>
-                            <div th:text="'Pincode: ' + ${order.address.pincode}"></div>
+                        <div class="flex flex-col">
+                            <span class="text-xs">Ordered:</span>
+                            <span th:text="${order.orderDate}"></span>
+<!--                            <span class="text-xs mt-1">Delivery:</span>-->
+<!--                            <span th:text="${order.deliveryDate}"></span>-->
+                        </div>
+                    </td>
+
+                    <!-- Product Details -->
+                    <td class="px-4 py-2 border" th:text="${order.product.name}"></td>
+                    <td class="px-4 py-2 border text-center" th:text="${order.quantity}"></td>
+                    <td class="px-4 py-2 border font-medium text-green-700" th:text="'₹' + ${order.totalPrice}"></td>
+
+                    <!-- Customer Info -->
+                    <td class="px-4 py-2 border">
+                        <div class="flex flex-col">
+                            <span th:text="${order.user.user_firstName} + ' ' + ${order.user.user_lastName}"></span>
+                            <span class="text-xs text-gray-500" th:text="${order.user.user_email}"></span>
+                        </div>
+                    </td>
+                    <td class="px-4 py-2 border" th:text="${order.user.mobileNumber}"></td>
+
+                    <!-- Shipping -->
+                    <td class="px-4 py-2 border">
+                        <div th:if="${order.address != null}" class="space-y-1 text-sm">
+                            <div class="font-medium" th:text="${order.address.house_number} + ', ' + ${order.address.street}"></div>
+                            <div th:text="${order.address.area}"></div>
+                            <div th:text="${order.address.city} + ' - ' + ${order.address.pincode}"></div>
                         </div>
                         <div th:if="${order.address == null}" class="text-red-500 font-semibold">
                             N/A
                         </div>
                     </td>
 
-                    <td class="px-4 py-2 border font-medium text-green-700" th:text="${order.totalPrice}"></td>
+                    <!-- Payment -->
+                    <td class="px-4 py-2 border">
+                        <div class="flex flex-col">
+                            <span th:text="${order.paymentMethod}"></span>
+                            <span th:if="${order.paymentStatus != null}"
+                                  class="text-xs"
+                                  th:classappend="${order.paymentStatus.equals('Paid')} ? 'text-green-600' : 'text-orange-600'"
+                                  th:text="${order.paymentStatus}"></span>
+                        </div>
+                    </td>
+
+                    <!-- Status -->
+                    <td class="px-4 py-2 border">
+                        <span th:text="${order.deliveryStatus}"
+                              th:classappend="${order.deliveryStatus.equals('Delivered')} ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'"
+                              class="px-2 py-1 rounded-full text-xs font-medium"></span>
+                    </td>
                 </tr>
                 </tbody>
             </table>
         </div>
 
         <div class="mt-4 text-right">
-            <a th:href="@{'/order-download-invoice'(deliveryDate=${entry.key})}"
-               class="inline-block bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-5 py-2.5 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">
+            <a th:href="@{'/download-delivered-invoice'(deliveryDate=${entry.key}, userId=${userId})}"
+               class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-5 py-2.5 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                </svg>
                 Download Invoice
             </a>
         </div>
     </div>
+
+    <script>
+        function redirectToOldOrders() {
+            const userId = localStorage.getItem("userId");
+            if (userId) {
+                window.location.href = `/pageUrl?page=order-history-old&orderStatus=Delivered&userId=${userId}`;
+            } else {
+                alert("User not logged in");
+            }
+        }
+    </script>
 </div>
 </html>
