@@ -18,6 +18,7 @@ public class Category {
 
     private String name;
     private String description;
+    private String category_image_url;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<ProductDetails> products;

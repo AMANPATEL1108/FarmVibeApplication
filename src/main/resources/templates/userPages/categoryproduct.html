@@ -1,51 +1,62 @@
+<!-- userPages/categoryproduct.html -->
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" th:fragment="content">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Category Products</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title th:text="${categoryName} + ' Products | Farm Vibe'">Category Products</title>
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <script>
-        // Get category from query string
-        window.onload = function () {
-            const params = new URLSearchParams(window.location.search);
-            const category = params.get("category") || "Category";
-            document.getElementById("categoryName").innerText = category;
-        };
-    </script>
+
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+    <style>
+        .hover-zoom:hover {
+            transform: scale(1.05);
+            transition: transform 0.4s ease-in-out;
+        }
+    </style>
 </head>
-<div class="bg-yellow-50 font-sans pt-10 pb-10">
+<body class="bg-gray-100 font-sans" th:fragment="content">
 
-    <!-- Page Heading -->
-    <div class="text-center mb-6 animate__animated animate__fadeInDown">
-        <h1 class="text-4xl font-bold text-green-800 mb-10">Products in <span id="categoryName">Category</span></h1>
-    </div>
+<!-- Section Heading -->
+<section class="text-center mb-12 animate__animated animate__fadeInDown mt-6">
+    <h2 class="text-4xl font-bold text-green-800 mb-2" th:text="${categoryName} + ' Products'">Category Name Products</h2>
+    <p class="text-gray-600 text-base max-w-2xl mx-auto">
+        Discover premium quality items in this category from Farm Vibe.
+    </p>
+</section>
 
-    <!-- Static Product Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto animate__animated animate__fadeInUp">
-        <!-- Product Card 1 -->
-        <div class="bg-white p-4 rounded-xl shadow hover:shadow-lg transition duration-300 text-center">
-            <img src="/images/vegetables/tomato2.jpeg" alt="Tomato" class="w-full h-48 object-cover rounded mb-3">
-            <h2 class="text-xl font-semibold text-green-700 mb-1">Fresh Tomato</h2>
-            <p class="text-gray-600 mb-2">₹40 / kg</p>
-            <a href="/pageUrl?page=productdetails"
-               th:classappend="${activePage == 'productdetails'} ? 'text-blue-400 font-bold' : 'text-white'"
-               class="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">View</a>
+<!-- Product Grid -->
+<div class="max-w-7xl mb-10 mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 animate__animated animate__fadeInUp">
+    <div th:each="product : ${products}"
+         class="bg-white rounded-xl shadow-md p-4 flex flex-col hover:shadow-lg transition-shadow duration-300">
+
+        <!-- Product Image -->
+        <a th:href="@{/pageUrl(page='productdetails', id=${product.id})}" class="block overflow-hidden rounded-lg hover-zoom">
+            <img th:src="@{${product.imageUrl}}" th:alt="${product.name}" class="w-full h-48 object-cover"/>
+        </a>
+
+        <!-- Product Info -->
+        <div class="mt-4 flex flex-col flex-grow">
+            <a th:href="@{/pageUrl(page='productdetails', id=${product.id})}"
+               class="text-lg font-semibold text-green-800 hover:underline"
+               th:text="${product.name}">Product Name</a>
+
+            <p class="text-gray-700 text-sm mt-1 line-clamp-2"
+               th:text="${product.description}">Product Description</p>
+
+            <div class="mt-auto flex items-center justify-between mt-4">
+                <span class="text-xl font-bold text-red-600"
+                      th:text="'₹' + ${product.price} + ' / ' + ${product.weight}">₹40 / kg</span>
+                <span class="text-sm text-gray-600"
+                      th:text="${product.stock > 0 ? 'In Stock' : 'Out of Stock'}">In Stock</span>
+            </div>
         </div>
-
-        <!-- Product Card 2 -->
-        <div class="bg-white p-4 rounded-xl shadow hover:shadow-lg transition duration-300 text-center">
-            <img src="/images/vegetables/tomato2.jpeg" alt="Carrot" class="w-full h-48 object-cover rounded mb-3">
-            <h2 class="text-xl font-semibold text-green-700 mb-1">Organic Carrot</h2>
-            <p class="text-gray-600 mb-2">₹50 / kg</p>
-            <a href="/pageUrl?page=productdetails"
-               th:classappend="${activePage == 'productdetails'} ? 'text-blue-400 font-bold' : 'text-white'"
-               class="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">View</a>
-        </div>
-
-        <!-- Add more cards as needed -->
     </div>
 </div>
 
+</body>
 </html>

@@ -80,7 +80,10 @@
     const deliveryDateInput = document.getElementById('deliveryDate');
     const maxStock = [[${product.stock}]];
     const productId = [[${product.id}]];
-    const userId = [[${#authentication?.principal?.userId}]] || 102;
+
+
+    const userId = localStorage.getItem("userId");
+
 
     quantityInput.max = maxStock;
     availableStockText.textContent = "Available Stock: " + maxStock;
