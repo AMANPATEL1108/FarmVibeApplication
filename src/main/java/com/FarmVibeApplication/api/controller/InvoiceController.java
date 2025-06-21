@@ -113,7 +113,13 @@ public class InvoiceController {
 
         Document document = new Document(PageSize.A4.rotate());
 
-        PdfWriter.getInstance(document, response.getOutputStream());
+        // ✅ Initialize PdfWriter only once
+        PdfWriter writer = PdfWriter.getInstance(document, response.getOutputStream());
+
+        // ✅ Set background logo using your custom PDFController
+        String logoPath = "src/main/resources/static/images/farmvibe_logo.png"; // Adjust as needed
+        writer.setPageEvent(new PDFController(logoPath));
+
         document.open();
 
         addInvoiceHeader(document, deliveryDate, userId);
@@ -122,6 +128,8 @@ public class InvoiceController {
 
         document.close();
     }
+
+
 
     private void addInvoiceHeader(Document document, LocalDate deliveryDate, Long userId) throws DocumentException {
         Paragraph header = new Paragraph();
@@ -174,7 +182,8 @@ public class InvoiceController {
         table.addCell(new Phrase(order.getUser().getUser_email(), font));
 
         String address = (order.getAddress() != null)
-                ? order.getAddress().getHouse_number() + ", " +
+                ? order.getAddress().getHouse_number() + ", "
+                +","+order.getAddress().getArea()+","+
                 order.getAddress().getStreet() + ", " +
                 order.getAddress().getCity() + " - " +
                 order.getAddress().getPincode()

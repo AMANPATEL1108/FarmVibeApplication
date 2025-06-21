@@ -21,6 +21,7 @@ public class UserPageController {
     @Autowired private AddressRepository addressRepository;
     @Autowired private OrderRepository orderRepository;
     @Autowired private CategoryRepository categoryRepository;
+    @Autowired private LocationRepository locationRepository;
 
     @GetMapping("/")
     public String home(Model model) {
@@ -83,6 +84,11 @@ public class UserPageController {
             ProductDetails product = productOpt.get();
             User user = userOpt.get();
 
+            List<String> cities = locationRepository.findDistinctCities();
+            model.addAttribute("cities", cities);
+            model.addAttribute("addresses", addressRepository.findByUser_userId(user.getUserId()));
+            model.addAttribute("newAddress", new Address());
+
             model.addAttribute("product", product);
             model.addAttribute("qty", qty);
             model.addAttribute("orderDate", LocalDate.parse(orderDate));
@@ -130,4 +136,15 @@ public class UserPageController {
         model.addAttribute("contentPage", "userPages/" + page);
         return "usermaster";
     }
+
+
+    @GetMapping("/api/areas")
+    @ResponseBody
+    public List<String> getAreasByCity(@RequestParam("city") String city) {
+        return locationRepository.findByCity(city).stream()
+                .map(Location::getArea)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
 }

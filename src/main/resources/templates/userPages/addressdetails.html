@@ -94,18 +94,30 @@
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">Street/Society</label>
-                    <input type="text" th:field="*{street}" required class="w-full px-4 py-2 border border-gray-300 rounded-md" placeholder="Main Street / Om Society" />
-                </div>
-
-                <div>
                     <label class="block text-gray-700 font-medium mb-1">City</label>
-                    <input type="text" name="city" required class="w-full px-4 py-2 border border-gray-300 rounded-md" placeholder="Ahmedabad" />
+                    <select id="cityDropdown" name="city" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-md">
+                        <option value="">-- Select City --</option>
+                        <option th:each="c : ${cities}" th:value="${c}" th:text="${c}"></option>
+                    </select>
+
                 </div>
 
+                <!-- ✅ City Dropdown -->
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">Area</label>
-                    <input type="text" name="area" required class="w-full px-4 py-2 border border-gray-300 rounded-md" placeholder="Satellite" />
+                    <select id="areaDropdown" name="area" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-md">
+                        <option value="">-- Select Area --</option>
+                    </select>
+                </div>
+
+                <!-- ✅ Area Dropdown -->
+                <div>
+
+
+                    <label class="block text-gray-700 font-medium mb-1">Street/Society</label>
+                    <input type="text" th:field="*{street}" required class="w-full px-4 py-2 border border-gray-300 rounded-md" placeholder="Main Street / Om Society" />
                 </div>
 
                 <div>
@@ -129,6 +141,27 @@
         </div>
     </div>
 </div>
+
+<!-- ✅ JavaScript for dynamic area loading -->
+<script>
+    document.getElementById('cityDropdown').addEventListener('change', function () {
+        const selectedCity = this.value;
+        const areaDropdown = document.getElementById('areaDropdown');
+        areaDropdown.innerHTML = '<option value="">Loading...</option>';
+
+        fetch(`/api/areas?city=${selectedCity}`)
+            .then(res => res.json())
+            .then(data => {
+                areaDropdown.innerHTML = '<option value="">-- Select Area --</option>';
+                data.forEach(area => {
+                    const option = document.createElement('option');
+                    option.value = area;
+                    option.text = area;
+                    areaDropdown.appendChild(option);
+                });
+            });
+    });
+</script>
 
 </body>
 </html>
